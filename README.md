@@ -1,1 +1,1 @@
-# py-open-admixture
+# admixture
