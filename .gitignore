@@ -49,6 +49,7 @@ coverage.xml
 *.py.cover
 .hypothesis/
 .pytest_cache/
+pytest-of-*/
 cover/
 
 # Translations
@@ -70,6 +71,8 @@ instance/
 
 # Sphinx documentation
 docs/_build/
+docs/.quarto/
+docs/_site/
 
 # PyBuilder
 .pybuilder/

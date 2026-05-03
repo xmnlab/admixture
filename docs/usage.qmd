@@ -1,0 +1,106 @@
+---
+title: "Usage"
+---
+
+## Input data
+
+OpenADMIXTURE.jl expects binary PLINK 1 input. A PLINK prefix such as
+`data/example` refers to these files:
+
+```text
+data/example.bed
+data/example.bim
+data/example.fam
+```
+
+Pass the prefix to Python:
+
+```python
+bfile = "data/example"
+```
+
+Passing `data/example.bed` is normalized to the same prefix when safe, but using
+the prefix directly is clearer.
+
+## Running OpenADMIXTURE.jl
+
+```python
+from admixture import OpenAdmixtureRunner
+
+runner = OpenAdmixtureRunner(
+    julia="julia",
+    project_dir="julia_env",
+    install_if_missing=False,
+    timeout=None,
+)
+
+result = runner.run(
+    bfile="data/example",
+    k=3,
+    out_prefix="results/example_k3",
+    seed=42,
+    threads=4,
+)
+```
+
+The runner validates input files before launching Julia. It builds a command as
+a tuple of arguments and never shells out through a command string.
+
+## Convenience function
+
+```python
+from admixture import run_openadmixture
+
+result = run_openadmixture(
+    bfile="data/example",
+    k=3,
+    out_prefix="results/example_k3",
+    project_dir="julia_env",
+    seed=42,
+    threads=4,
+)
+```
+
+## Result object
+
+`OpenAdmixtureResult` contains parsed results and execution metadata:
+
+```python
+result.q          # ancestry proportions, individuals x K
+result.p          # allele frequencies if produced, otherwise None
+result.q_path     # path to parsed Q file
+result.p_path     # path to parsed P file, or None
+result.log_path   # path to log file, or None
+result.stdout     # captured Julia stdout
+result.stderr     # captured Julia stderr
+result.metadata   # input paths and runtime metadata
+```
+
+Write parsed tables to CSV:
+
+```python
+result.to_csv("results/example_k3")
+```
+
+Get a compact summary:
+
+```python
+result.summary()
+```
+
+## Optional algorithm arguments
+
+The Python wrapper exposes core arguments directly. Additional supported Julia
+bridge options can be passed through `extra_args`:
+
+```python
+result = runner.run(
+    bfile="data/example",
+    k=3,
+    out_prefix="results/example_k3",
+    extra_args={"max_iter": 500, "tol": 1e-6},
+)
+```
+
+Argument names use Python-friendly underscores and are converted to CLI flags,
+for example `max_iter` becomes `--max-iter`.

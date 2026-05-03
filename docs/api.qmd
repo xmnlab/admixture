@@ -1,0 +1,89 @@
+---
+title: "API reference"
+---
+
+## Public API
+
+The top-level package exports:
+
+```python
+from admixture import (
+    OpenAdmixtureRunner,
+    OpenAdmixtureResult,
+    run_openadmixture,
+)
+```
+
+## `OpenAdmixtureRunner`
+
+```python
+OpenAdmixtureRunner(
+    julia="julia",
+    project_dir=None,
+    install_if_missing=False,
+    timeout=None,
+)
+```
+
+Parameters:
+
+- `julia`: executable name or explicit executable path.
+- `project_dir`: optional Julia project passed as `--project=<project_dir>`.
+- `install_if_missing`: if `True`, bootstrap OpenADMIXTURE.jl into
+  `project_dir` when missing. This is opt-in and requires `project_dir`.
+- `timeout`: optional subprocess timeout in seconds.
+
+Useful methods:
+
+- `check_julia()`: return a `JuliaInfo` object with executable and version.
+- `check_openadmixture()`: return whether OpenADMIXTURE.jl imports.
+- `version_info()`: return Python, platform, Julia, and backend metadata.
+- `run(...)`: execute OpenADMIXTURE.jl and return `OpenAdmixtureResult`.
+
+## `run_openadmixture`
+
+```python
+run_openadmixture(
+    *,
+    bfile,
+    k,
+    out_prefix,
+    julia="julia",
+    project_dir=None,
+    install_if_missing=False,
+    timeout=None,
+    seed=None,
+    threads=None,
+    extra_args=None,
+)
+```
+
+Creates an `OpenAdmixtureRunner` and runs it once.
+
+## `OpenAdmixtureResult`
+
+Fields:
+
+- `q`: parsed ancestry proportions as `pandas.DataFrame`.
+- `p`: parsed allele frequencies as `pandas.DataFrame | None`.
+- `q_path`, `p_path`, `log_path`: output file paths.
+- `out_prefix`: requested output prefix.
+- `k`: number of ancestries.
+- `command`: Julia subprocess command tuple.
+- `returncode`, `stdout`, `stderr`: process execution details.
+- `metadata`: dictionary with input and runtime metadata.
+
+Methods:
+
+- `to_csv(prefix)`: write parsed `.Q.csv` and `.P.csv` files.
+- `summary()`: return compact result metadata.
+
+## Exceptions
+
+All package-specific exceptions inherit from `OpenAdmixtureError`:
+
+- `JuliaNotFoundError`
+- `OpenAdmixtureNotInstalledError`
+- `PlinkInputError`
+- `OpenAdmixtureRunError`
+- `OutputParseError`

@@ -1,0 +1,44 @@
+project:
+  type: website
+  output-dir: _site
+
+website:
+  title: "admixture"
+  description: "Python wrapper around OpenADMIXTURE.jl"
+  repo-url: https://github.com/malariagen-org/admixture
+  repo-actions: [source, issue]
+  navbar:
+    left:
+      - href: index.qmd
+        text: Home
+      - href: installation.qmd
+        text: Installation
+      - href: usage.qmd
+        text: Usage
+      - href: api.qmd
+        text: API
+      - href: development.qmd
+        text: Development
+      - href: troubleshooting.qmd
+        text: Troubleshooting
+  sidebar:
+    style: docked
+    contents:
+      - index.qmd
+      - installation.qmd
+      - usage.qmd
+      - api.qmd
+      - development.qmd
+      - troubleshooting.qmd
+
+format:
+  html:
+    theme:
+      light: cosmo
+      dark: darkly
+    toc: true
+    code-copy: true
+    css: styles.css
+
+execute:
+  freeze: auto

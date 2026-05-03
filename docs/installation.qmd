@@ -1,0 +1,89 @@
+---
+title: "Installation"
+---
+
+## Python development environment
+
+This repository uses **conda and Poetry together**. The conda environment is
+named `admixture`.
+
+```bash
+conda env create -f conda.yaml
+conda activate admixture
+poetry config virtualenvs.create false
+poetry install --with dev
+```
+
+If the environment already exists:
+
+```bash
+conda activate admixture
+conda env update -f conda.yaml --prune
+poetry install --with dev
+```
+
+## Quarto documentation engine
+
+The documentation in `docs/` is a Quarto website. The conda environment includes
+the Quarto CLI when created from `conda.yaml`.
+
+Render locally with:
+
+```bash
+conda activate admixture
+quarto render docs
+```
+
+Preview locally with:
+
+```bash
+quarto preview docs
+```
+
+## Julia runtime
+
+Julia is an external runtime, not a Python dependency.
+
+Install Julia from <https://julialang.org/downloads/> and verify it is on
+`PATH`:
+
+```bash
+julia --version
+```
+
+You can also pass an explicit executable path:
+
+```python
+from admixture import OpenAdmixtureRunner
+
+runner = OpenAdmixtureRunner(julia="/path/to/julia")
+```
+
+On Windows:
+
+```python
+runner = OpenAdmixtureRunner(
+    julia=r"C:\Users\you\AppData\Local\Programs\Julia-1.11.0\bin\julia.exe"
+)
+```
+
+## OpenADMIXTURE.jl
+
+Install the upstream Julia packages into your selected Julia environment:
+
+```bash
+julia -e 'using Pkg; Pkg.add(url="https://github.com/kose-y/SparseKmeansFeatureRanking.jl"); Pkg.add(url="https://github.com/OpenMendel/OpenADMIXTURE.jl")'
+```
+
+For a project-local Julia environment:
+
+```bash
+mkdir julia_env
+julia --project=julia_env -e 'using Pkg; Pkg.add(url="https://github.com/kose-y/SparseKmeansFeatureRanking.jl"); Pkg.add(url="https://github.com/OpenMendel/OpenADMIXTURE.jl")'
+```
+
+Then configure the runner:
+
+```python
+runner = OpenAdmixtureRunner(project_dir="julia_env")
+```

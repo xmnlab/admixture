@@ -1,0 +1,48 @@
+---
+title: "admixture"
+subtitle: "A Python wrapper around OpenADMIXTURE.jl"
+---
+
+`admixture` provides a Python interface for running
+[OpenADMIXTURE.jl](https://github.com/OpenMendel/OpenADMIXTURE.jl) on binary
+PLINK datasets and parsing the results into Python objects.
+
+::: {.callout-important}
+This package is **not** the original OpenADMIXTURE implementation and does
+**not** reimplement the algorithm. It is a subprocess-based wrapper around the
+upstream Julia package from the [OpenMendel](https://openmendel.github.io/)
+project.
+:::
+
+## What the wrapper does
+
+- validates a binary PLINK `.bed` / `.bim` / `.fam` prefix;
+- locates Julia or accepts an explicit Julia executable path;
+- checks whether `OpenADMIXTURE.jl` imports in the chosen Julia environment;
+- runs a packaged Julia bridge script via `subprocess.run(..., shell=False)`;
+- parses `.Q`, `.P`, and `.log` outputs;
+- returns an `OpenAdmixtureResult` with `pandas.DataFrame` results.
+
+## Minimal example
+
+```python
+from admixture import OpenAdmixtureRunner
+
+runner = OpenAdmixtureRunner(project_dir="julia_env")
+
+result = runner.run(
+    bfile="data/example",
+    k=3,
+    out_prefix="results/example_k3",
+    seed=42,
+    threads=4,
+)
+
+print(result.q)
+```
+
+## Upstream resources
+
+- OpenADMIXTURE.jl: <https://github.com/OpenMendel/OpenADMIXTURE.jl>
+- OpenMendel: <https://openmendel.github.io/>
+- OpenADMIXTURE paper: <https://pmc.ncbi.nlm.nih.gov/articles/PMC9943729/>

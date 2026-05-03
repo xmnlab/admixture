@@ -1,0 +1,69 @@
+---
+title: "Troubleshooting"
+---
+
+## Julia executable was not found
+
+Install Julia from <https://julialang.org/downloads/> or pass an explicit path:
+
+```python
+from admixture import OpenAdmixtureRunner
+
+runner = OpenAdmixtureRunner(julia="/path/to/julia")
+```
+
+## OpenADMIXTURE.jl is not installed
+
+Install the upstream package in the Julia environment you plan to use:
+
+```bash
+julia -e 'using Pkg; Pkg.add(url="https://github.com/kose-y/SparseKmeansFeatureRanking.jl"); Pkg.add(url="https://github.com/OpenMendel/OpenADMIXTURE.jl")'
+```
+
+If using a project-local Julia environment, pass the same directory as
+`project_dir`.
+
+## PLINK files are missing or empty
+
+For `bfile="data/example"`, all three files must exist and be non-empty:
+
+```text
+data/example.bed
+data/example.bim
+data/example.fam
+```
+
+## Output files are missing
+
+The wrapper looks for common output names such as:
+
+```text
+<out_prefix>.Q
+<out_prefix>.P
+<out_prefix>.log
+<out_prefix>.<K>.Q
+<out_prefix>.<K>.P
+<out_prefix>_K<K>.Q
+<out_prefix>_K<K>.P
+```
+
+If multiple `.Q` files match, remove stale files or choose a unique
+`out_prefix`.
+
+## Paths with spaces
+
+Paths with spaces are supported because the runner passes a list of subprocess
+arguments and uses `shell=False`. If you see path issues, include
+`result.command` or the raised exception text in your bug report.
+
+## Integration tests skip
+
+Set `ADMIXTURE_TEST_PLINK_PREFIX` to a real PLINK prefix:
+
+```bash
+export ADMIXTURE_TEST_PLINK_PREFIX=/path/to/example
+pytest -m integration
+```
+
+Optionally set `ADMIXTURE_TEST_JULIA_PROJECT` when OpenADMIXTURE.jl is installed
+in a project-local Julia environment.

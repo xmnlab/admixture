@@ -1,16 +1,25 @@
 [project]
 name = "admixture"
 version = "0.1.0"  # semantic-release
-description = "Interview Test for MalariaGEN Python packages"
-readme = "docs/index.md"
+description = "Python wrapper around OpenADMIXTURE.jl"
+readme = "README.md"
 authors = [
   {name = "Ivan Ogasawara", email = "ivan.ogasawara@gmail.com"}
 ]
-license = "BSD 3 Clause"
-requires-python = ">=3.10,<3.13"
+license = "BSD-3-Clause"
+requires-python = ">=3.10"
 dependencies = [
-  "atpublic >= 4.0",
-  "typeguard >= 4",
+  "numpy",
+  "pandas",
+  "packaging",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest",
+  "pytest-cov",
+  "ruff",
+  "mypy",
 ]
 
 [build-system]
@@ -23,46 +32,26 @@ exclude = [
   ".env*",
 ]
 packages = [
-  {include = "admixture", from="src"},
+  {include = "admixture", from = "src"},
 ]
 include = [
   "src/admixture/py.typed",
+  "src/admixture/julia/*.jl",
 ]
 
 [tool.poetry.group.dev.dependencies]
-"malariagen-data >=15.7.0",
 pytest = ">=7.3.2"
 pytest-cov = ">=4.1.0"
-coverage = ">=7.2.7"
-pre-commit = ">=3.3.2"
 ruff = ">=0.1.5"
 mypy = ">=1.5.0"
-bandit = ">=1.7.5"
-vulture = ">=2.9.1"
-mccabe = ">=0.6.1"
-ipython = ">=7"
-ipykernel = ">=6.0.0"
-mkdocs = ">=1.3"
-mkdocs-exclude = ">=1.0.2"
-mkdocs-jupyter = ">=0.24.7"
-mkdocs-literate-nav = ">=0.4.1"
-mkdocs-macros-plugin = ">=0.6.3"
-mkdocs-material = ">=8"
-mkdocstrings = {version=">=0.19.0", extras=["python"]}
-mkdocstrings-python = "<2"
-makim = "1.27.0"
-jupyterlab = ">=4.0.7"
-mkdocs-gen-files = ">=0.5.0"
-nbmake = ">=1.5.3"
-pytest-xdist = "^3.8.0"
 
 [tool.pytest.ini_options]
-testpaths = [
-    "tests",
+testpaths = ["tests"]
+markers = [
+  "integration: tests requiring Julia and OpenADMIXTURE.jl",
 ]
 filterwarnings = [
-    "error::RuntimeWarning",
-    "error::typeguard.TypeHintWarning",
+  "error::RuntimeWarning",
 ]
 
 [tool.bandit]
@@ -80,14 +69,13 @@ sort_by_size = true
 verbose = false
 
 [tool.ruff]
-line-length = 79
+line-length = 88
 force-exclude = true
 src = ["./"]
 target-version = "py310"
 exclude = [
-  'docs',
+  "docs",
 ]
-fix = true
 
 [tool.ruff.lint]
 ignore = [
@@ -97,6 +85,7 @@ ignore = [
   "PLR0913",  # Too many arguments in a function definition
   "RUF012",  # mutable-class-default
   "PLR0915",  # Too many statements
+  "PLR2004",  # Magic values are common in tests and small validators
 ]
 select = [
   "D",   # docstrings
@@ -112,11 +101,13 @@ extend-select = [
   "UP007",  # Prefer | syntax for unions and optionals
 ]
 
+[tool.ruff.lint.per-file-ignores]
+"tests/**/*.py" = ["D"]
+
 [tool.ruff.lint.pydocstyle]
 convention = "numpy"
 
 [tool.ruff.lint.isort]
-# Use a single line between direct and from import
 lines-between-types = 1
 
 [tool.ruff.format]
