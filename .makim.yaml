@@ -38,7 +38,7 @@ groups:
           params:
             help: extra pytest parameters
             type: string
-            default: '-m "not integration"'
+            default: "-m 'not integration'"
         run: pytest ${{ args.path }} ${{ args.params }}
 
       integration:
