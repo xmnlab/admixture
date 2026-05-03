@@ -4,6 +4,13 @@ title: "Installation"
 
 ## Python development environment
 
+From PyPI:
+
+```bash
+pip install admixture
+admixture-setup --project-dir julia_env
+```
+
 This repository uses **conda and Poetry together**. The conda environment is
 named `admixture`.
 
@@ -12,6 +19,7 @@ conda env create -f conda.yaml
 conda activate admixture
 poetry config virtualenvs.create false
 poetry install --with dev
+poetry run admixture-setup --project-dir julia_env
 ```
 
 If the environment already exists:
@@ -83,7 +91,19 @@ julia --project=julia_env -e 'using Pkg; Pkg.add(url="https://github.com/kose-y/
 ```
 
 Alternatively, bootstrap the project-local Julia environment explicitly from
-Python:
+the installed command:
+
+```bash
+admixture-setup --project-dir julia_env
+```
+
+From Poetry, use:
+
+```bash
+poetry run admixture-setup --project-dir julia_env
+```
+
+You can also call the same setup helper from Python:
 
 ```python
 import admixture

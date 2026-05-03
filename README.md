@@ -25,6 +25,16 @@ Python layer for:
 - parsing `.Q` ancestry proportions and `.P` allele frequencies into
   `pandas.DataFrame` objects.
 
+## Installation from PyPI
+
+```bash
+pip install admixture
+admixture-setup --project-dir julia_env
+```
+
+The `admixture-setup` command installs OpenADMIXTURE.jl into the explicit Julia
+project directory you provide.
+
 ## Installation for development
 
 This repository uses **conda and Poetry together**. Conda provides the base
@@ -35,6 +45,7 @@ conda env create -f conda.yaml
 conda activate admixture
 poetry config virtualenvs.create false
 poetry install --with dev
+poetry run admixture-setup --project-dir julia_env
 ```
 
 For a pip-style editable install inside the activated conda environment:
@@ -101,7 +112,19 @@ from admixture import OpenAdmixtureRunner
 runner = OpenAdmixtureRunner(project_dir="julia_env")
 ```
 
-You may also opt in to Python-triggered Julia project bootstrapping:
+The Python package also installs a setup command:
+
+```bash
+admixture-setup --project-dir julia_env
+```
+
+From Poetry, run:
+
+```bash
+poetry run admixture-setup --project-dir julia_env
+```
+
+Or bootstrap from Python:
 
 ```python
 import admixture
@@ -110,8 +133,9 @@ admixture.setup(project_dir="julia_env")
 ```
 
 `admixture.setup()` requires `project_dir` so the global Julia environment is
-not modified unexpectedly. `OpenAdmixtureRunner(install_if_missing=True)` is
-also available for explicit opt-in bootstrapping during a run.
+not modified unexpectedly. The CLI has the same requirement.
+`OpenAdmixtureRunner(install_if_missing=True)` is also available for explicit
+opt-in bootstrapping during a run.
 
 ## Basic usage
 

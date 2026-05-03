@@ -93,7 +93,7 @@ makim package.build
 - Do not add GPL or closed-source ADMIXTURE as a dependency.
 - Do not run network-installing Julia bootstrap code during import,
   post-install, or tests. Use explicit `admixture.setup(project_dir=...)` for
-  opt-in Julia project setup.
+  opt-in Julia project setup, or the installed `admixture-setup` command.
 - Use `pathlib.Path` for paths.
 - Use `subprocess.run([...], shell=False, capture_output=True, text=True)`.
 - Never build shell command strings for Julia execution.

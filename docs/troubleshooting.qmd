@@ -24,7 +24,13 @@ If using a project-local Julia environment, pass the same directory as
 `project_dir`.
 
 You can also bootstrap a project-local Julia environment explicitly from
-Python:
+the installed command:
+
+```bash
+admixture-setup --project-dir julia_env
+```
+
+Or from Python:
 
 ```python
 import admixture

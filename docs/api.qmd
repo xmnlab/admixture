@@ -73,6 +73,12 @@ Installs OpenADMIXTURE.jl into an explicit Julia project. `project_dir` is
 required so package installation never mutates the global Julia environment by
 default.
 
+Equivalent installed command:
+
+```bash
+admixture-setup --project-dir julia_env --julia julia
+```
+
 ## `OpenAdmixtureResult`
 
 Fields:

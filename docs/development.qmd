@@ -19,6 +19,12 @@ Run the test suite:
 makim tests.unit
 ```
 
+Install OpenADMIXTURE.jl into the default project-local Julia environment:
+
+```bash
+makim setup.julia
+```
+
 Run all tests:
 
 ```bash

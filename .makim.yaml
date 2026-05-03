@@ -26,6 +26,22 @@ groups:
           rm -rf .ruff_cache/
           rm -rf pytest-of-*/
 
+  setup:
+    tasks:
+      julia:
+        help: install OpenADMIXTURE.jl into a project-local Julia environment
+        args:
+          project_dir:
+            help: Julia project directory to create or update
+            type: string
+            default: julia_env
+          julia:
+            help: Julia executable name or path
+            type: string
+            default: julia
+        run: |
+          python -m admixture.cli --project-dir "${{ args.project_dir }}" --julia "${{ args.julia }}"
+
   tests:
     tasks:
       unit:

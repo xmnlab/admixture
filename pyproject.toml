@@ -15,6 +15,9 @@ dependencies = [
   "typeguard >=4.5.1",
 ]
 
+[project.scripts]
+admixture-setup = "admixture.cli:setup_main"
+
 
 [build-system]
 requires = ["poetry-core>=2"]
