@@ -11,6 +11,7 @@ from admixture import (
     OpenAdmixtureRunner,
     OpenAdmixtureResult,
     run_openadmixture,
+    setup,
 )
 ```
 
@@ -59,6 +60,18 @@ run_openadmixture(
 ```
 
 Creates an `OpenAdmixtureRunner` and runs it once.
+
+## `setup`
+
+```python
+import admixture
+
+admixture.setup(project_dir="julia_env", julia="julia")
+```
+
+Installs OpenADMIXTURE.jl into an explicit Julia project. `project_dir` is
+required so package installation never mutates the global Julia environment by
+default.
 
 ## `OpenAdmixtureResult`
 

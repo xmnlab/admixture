@@ -23,6 +23,15 @@ julia -e 'using Pkg; Pkg.add(url="https://github.com/kose-y/SparseKmeansFeatureR
 If using a project-local Julia environment, pass the same directory as
 `project_dir`.
 
+You can also bootstrap a project-local Julia environment explicitly from
+Python:
+
+```python
+import admixture
+
+admixture.setup(project_dir="julia_env")
+```
+
 ## PLINK files are missing or empty
 
 For `bfile="data/example"`, all three files must exist and be non-empty:
@@ -56,14 +65,15 @@ Paths with spaces are supported because the runner passes a list of subprocess
 arguments and uses `shell=False`. If you see path issues, include
 `result.command` or the raised exception text in your bug report.
 
-## OpenADMIXTURE runtime test skip
+## OpenADMIXTURE runtime test prerequisites
 
-Set `ADMIXTURE_TEST_PLINK_PREFIX` to a real PLINK prefix:
+Runtime tests require Julia and OpenADMIXTURE.jl. They should fail, not skip, if
+either is unavailable:
 
 ```bash
-export ADMIXTURE_TEST_PLINK_PREFIX=/path/to/example
 pytest tests
 ```
 
 Optionally set `ADMIXTURE_TEST_JULIA_PROJECT` when OpenADMIXTURE.jl is installed
-in a project-local Julia environment.
+in a project-local Julia environment. The malariagen-data-backed runtime test
+skips only on Python 3.13+ because malariagen-data is unavailable there.

@@ -15,6 +15,7 @@ from .exceptions import (
 )
 from .result import OpenAdmixtureResult
 from .runner import OpenAdmixtureRunner, run_openadmixture
+from .setup import setup
 
 __all__ = [
     "JuliaNotFoundError",
@@ -27,4 +28,5 @@ __all__ = [
     "PlinkInputError",
     "__version__",
     "run_openadmixture",
+    "setup",
 ]

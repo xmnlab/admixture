@@ -25,13 +25,11 @@ Run all tests:
 makim tests.all
 ```
 
-The OpenADMIXTURE runtime test is skipped unless `ADMIXTURE_TEST_PLINK_PREFIX`
-points to a real binary PLINK prefix and OpenADMIXTURE.jl is installed in the
-selected Julia environment.
-
 The malariagen-data runtime test exports a small Ag3 SNP panel to PLINK and then
-runs the wrapper against the exported files. This test imports `malariagen_data`
-inside the test body only, skips on Python 3.13+, and can be configured with:
+runs the wrapper against the exported files. Runtime tests require Julia and
+OpenADMIXTURE.jl and fail when either is unavailable. The malariagen-data test
+imports `malariagen_data` inside the test body only and skips only on Python
+3.13+, where malariagen-data is unavailable. It can be configured with:
 
 - `ADMIXTURE_TEST_MALARIAGEN_SAMPLE_SETS`
 - `ADMIXTURE_TEST_MALARIAGEN_SAMPLE_QUERY`

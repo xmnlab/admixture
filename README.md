@@ -104,14 +104,14 @@ runner = OpenAdmixtureRunner(project_dir="julia_env")
 You may also opt in to Python-triggered Julia project bootstrapping:
 
 ```python
-runner = OpenAdmixtureRunner(
-    project_dir="julia_env",
-    install_if_missing=True,
-)
+import admixture
+
+admixture.setup(project_dir="julia_env")
 ```
 
-`install_if_missing=True` requires `project_dir` so the global Julia environment
-is not modified unexpectedly.
+`admixture.setup()` requires `project_dir` so the global Julia environment is
+not modified unexpectedly. `OpenAdmixtureRunner(install_if_missing=True)` is
+also available for explicit opt-in bootstrapping during a run.
 
 ## Basic usage
 
@@ -238,17 +238,18 @@ the shared prefix, not a directory.
 Check `result.stdout`/`result.stderr` or the raised exception. Remove stale
 outputs if multiple candidate `.Q` files match the same output prefix.
 
-### OpenADMIXTURE test skipped
+### OpenADMIXTURE runtime tests
 
-The runtime test requires all of:
+Runtime tests require all of:
 
 - Julia on `PATH`;
 - OpenADMIXTURE.jl installed;
-- `ADMIXTURE_TEST_PLINK_PREFIX` set to a real PLINK prefix.
+- malariagen-data installed in the development environment on Python `<3.13`.
 
-The malariagen-data runtime test is development-only. It skips on Python 3.13+
-and imports `malariagen_data` inside the test only, so the package does not gain
-a production dependency on malariagen-data.
+These tests fail if Julia or OpenADMIXTURE.jl is unavailable. The
+malariagen-data runtime test is development-only, skips on Python 3.13+, and
+imports `malariagen_data` inside the test only, so the package does not gain a
+production dependency on malariagen-data.
 
 Run tests with:
 

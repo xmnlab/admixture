@@ -5,7 +5,6 @@ title: Runtime tests using malariagen-data as a PLINK data source.
 from __future__ import annotations
 
 import os
-import shutil
 import sys
 
 from pathlib import Path
@@ -28,9 +27,9 @@ def _import_malariagen_data() -> Any:
     returns:
       type: Any
     """
-    if sys.version_info >= (3, 13):
-        pytest.skip("malariagen-data is not available for Python 3.13+")
-    return pytest.importorskip("malariagen_data")
+    import malariagen_data  # noqa: PLC0415 - avoid importing on Python 3.13+
+
+    return malariagen_data
 
 
 def _openadmixture_runner() -> OpenAdmixtureRunner:
@@ -39,13 +38,12 @@ def _openadmixture_runner() -> OpenAdmixtureRunner:
     returns:
       type: OpenAdmixtureRunner
     """
-    if shutil.which("julia") is None:
-        pytest.skip("Julia executable is not available on PATH")
-
     project_dir = os.environ.get("ADMIXTURE_TEST_JULIA_PROJECT")
     runner = OpenAdmixtureRunner(project_dir=project_dir)
-    if not runner.check_openadmixture():
-        pytest.skip("OpenADMIXTURE.jl is not installed in the Julia environment")
+    assert runner.check_openadmixture(), (
+        "OpenADMIXTURE.jl is required for runtime tests. Install it in the "
+        "active Julia environment or set ADMIXTURE_TEST_JULIA_PROJECT."
+    )
     return runner
 
 

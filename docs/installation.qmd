@@ -82,6 +82,15 @@ mkdir julia_env
 julia --project=julia_env -e 'using Pkg; Pkg.add(url="https://github.com/kose-y/SparseKmeansFeatureRanking.jl"); Pkg.add(url="https://github.com/OpenMendel/OpenADMIXTURE.jl")'
 ```
 
+Alternatively, bootstrap the project-local Julia environment explicitly from
+Python:
+
+```python
+import admixture
+
+admixture.setup(project_dir="julia_env")
+```
+
 Then configure the runner:
 
 ```python

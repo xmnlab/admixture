@@ -72,9 +72,8 @@ Run tests with:
 makim tests.unit
 ```
 
-The OpenADMIXTURE runtime test requires Julia, OpenADMIXTURE.jl, and a real
-binary PLINK prefix via `ADMIXTURE_TEST_PLINK_PREFIX`; it skips itself when the
-local runtime/data prerequisites are not configured.
+OpenADMIXTURE runtime tests require Julia and OpenADMIXTURE.jl. They should
+fail, not skip, when the Julia runtime or OpenADMIXTURE.jl is unavailable.
 
 Tests may use `malariagen-data` as a development-only dependency. Do not import
 `malariagen_data` from `src/`; keep it test-only to avoid a future circular
@@ -92,7 +91,9 @@ makim package.build
 
 - Do not vendor OpenADMIXTURE.jl source code.
 - Do not add GPL or closed-source ADMIXTURE as a dependency.
-- Do not run network-installing Julia bootstrap code during import or tests.
+- Do not run network-installing Julia bootstrap code during import,
+  post-install, or tests. Use explicit `admixture.setup(project_dir=...)` for
+  opt-in Julia project setup.
 - Use `pathlib.Path` for paths.
 - Use `subprocess.run([...], shell=False, capture_output=True, text=True)`.
 - Never build shell command strings for Julia execution.
@@ -115,7 +116,7 @@ verify against upstream source/docs before changing the bridge or docs.
 Maintain the top-level exports:
 
 ```python
-from admixture import OpenAdmixtureRunner, OpenAdmixtureResult, run_openadmixture
+from admixture import OpenAdmixtureRunner, OpenAdmixtureResult, run_openadmixture, setup
 ```
 
 Package-specific exceptions should inherit from `OpenAdmixtureError`.
