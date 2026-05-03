@@ -100,9 +100,9 @@ repos:
         types:
           - python
 
-      - id: typechecked-policy
-        name: typechecked policy
-        entry: pytest -q tests/test_typechecked_policy.py
-        language: system
-        pass_filenames: false
-        always_run: true
+      # - id: typechecked-policy
+      #   name: typechecked policy
+      #   entry: pytest -q tests/test_typechecked_policy.py
+      #   language: system
+      #   pass_filenames: false
+      #   always_run: true

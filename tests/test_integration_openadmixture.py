@@ -5,6 +5,8 @@ from __future__ import annotations
 import os
 import shutil
 
+from pathlib import Path
+
 import numpy as np
 import pytest
 
@@ -12,7 +14,7 @@ from admixture import OpenAdmixtureRunner
 
 
 @pytest.mark.integration
-def test_openadmixture_integration(tmp_path) -> None:
+def test_openadmixture_integration(tmp_path: Path) -> None:
     """Run OpenADMIXTURE.jl against a user-provided PLINK prefix."""
 
     prefix = os.environ.get("ADMIXTURE_TEST_PLINK_PREFIX")

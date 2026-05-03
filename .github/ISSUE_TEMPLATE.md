@@ -1,4 +1,4 @@
-- Python Open Admixture  version:
+- Python Open Admixture version:
 - Python version:
 - Operating System:
 

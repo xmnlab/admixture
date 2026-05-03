@@ -61,9 +61,7 @@ def validate_plink_prefix(prefix: str | Path) -> PlinkFiles:
         )
 
     empty = [
-        path
-        for path in (files.bed, files.bim, files.fam)
-        if path.stat().st_size == 0
+        path for path in (files.bed, files.bim, files.fam) if path.stat().st_size == 0
     ]
     if empty:
         empty_text = "\n".join(f"  - {path}" for path in empty)

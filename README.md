@@ -110,8 +110,8 @@ runner = OpenAdmixtureRunner(
 )
 ```
 
-`install_if_missing=True` requires `project_dir` so the global Julia
-environment is not modified unexpectedly.
+`install_if_missing=True` requires `project_dir` so the global Julia environment
+is not modified unexpectedly.
 
 ## Basic usage
 

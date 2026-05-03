@@ -43,8 +43,8 @@ OPENADMIXTURE_NOT_INSTALLED_MESSAGE = (
     "environment.\n\n"
     "Install it with Julia's package manager:\n\n"
     "    julia -e 'using Pkg; "
-    "Pkg.add(url=\"https://github.com/kose-y/SparseKmeansFeatureRanking.jl\"); "
-    "Pkg.add(url=\"https://github.com/OpenMendel/OpenADMIXTURE.jl\")'\n\n"
+    'Pkg.add(url="https://github.com/kose-y/SparseKmeansFeatureRanking.jl"); '
+    'Pkg.add(url="https://github.com/OpenMendel/OpenADMIXTURE.jl")\'\n\n'
     "or create a project-local Julia environment and pass project_dir=... to\n"
     "OpenAdmixtureRunner.\n"
 )

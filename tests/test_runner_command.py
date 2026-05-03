@@ -7,7 +7,9 @@ from pathlib import Path
 from admixture import OpenAdmixtureRunner
 
 
-def test_build_command_uses_argument_tuple_and_preserves_spaces(tmp_path) -> None:
+def test_build_command_uses_argument_tuple_and_preserves_spaces(
+    tmp_path: Path,
+) -> None:
     """Paths with spaces remain single subprocess arguments."""
 
     project_dir = tmp_path / "Julia Project"
@@ -32,7 +34,7 @@ def test_build_command_uses_argument_tuple_and_preserves_spaces(tmp_path) -> Non
     assert command[command.index("--out") + 1] == str(out_prefix)
 
 
-def test_build_command_omits_optional_args_when_absent(tmp_path) -> None:
+def test_build_command_omits_optional_args_when_absent(tmp_path: Path) -> None:
     """Project, seed and thread args are emitted only when requested."""
 
     runner = OpenAdmixtureRunner(julia=Path("julia"))
@@ -49,7 +51,7 @@ def test_build_command_omits_optional_args_when_absent(tmp_path) -> None:
     assert "--seed" not in command
 
 
-def test_build_command_accepts_extra_args(tmp_path) -> None:
+def test_build_command_accepts_extra_args(tmp_path: Path) -> None:
     """Extra algorithm parameters are converted to CLI flags."""
 
     runner = OpenAdmixtureRunner()

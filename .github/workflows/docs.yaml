@@ -4,18 +4,8 @@ on:
   workflow_dispatch:
   push:
     branches: [main]
-    paths:
-      - "docs/**"
-      - "README.md"
-      - ".makim.yaml"
-      - ".github/workflows/docs.yaml"
   pull_request:
     branches: [main]
-    paths:
-      - "docs/**"
-      - "README.md"
-      - ".makim.yaml"
-      - ".github/workflows/docs.yaml"
 
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

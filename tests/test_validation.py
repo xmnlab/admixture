@@ -2,6 +2,9 @@
 
 from __future__ import annotations
 
+from pathlib import Path
+from typing import cast
+
 import pytest
 
 from admixture.exceptions import PlinkInputError
@@ -14,13 +17,13 @@ from admixture.validation import (
 )
 
 
-def _write_plink_trio(prefix, *, empty_suffix: str | None = None) -> None:
+def _write_plink_trio(prefix: Path, *, empty_suffix: str | None = None) -> None:
     for suffix in ("bed", "bim", "fam"):
         content = b"" if suffix == empty_suffix else b"x"
         (prefix.parent / f"{prefix.name}.{suffix}").write_bytes(content)
 
 
-def test_validate_plink_prefix_accepts_valid_trio(tmp_path) -> None:
+def test_validate_plink_prefix_accepts_valid_trio(tmp_path: Path) -> None:
     """A complete non-empty .bed/.bim/.fam trio is accepted."""
 
     prefix = tmp_path / "example"
@@ -34,7 +37,7 @@ def test_validate_plink_prefix_accepts_valid_trio(tmp_path) -> None:
     assert files.fam == tmp_path / "example.fam"
 
 
-def test_validate_plink_prefix_normalises_bed_suffix(tmp_path) -> None:
+def test_validate_plink_prefix_normalises_bed_suffix(tmp_path: Path) -> None:
     """Passing example.bed is safely normalized to example."""
 
     prefix = tmp_path / "example"
@@ -46,7 +49,10 @@ def test_validate_plink_prefix_normalises_bed_suffix(tmp_path) -> None:
 
 
 @pytest.mark.parametrize("missing_suffix", ["bed", "bim", "fam"])
-def test_validate_plink_prefix_missing_file(tmp_path, missing_suffix) -> None:
+def test_validate_plink_prefix_missing_file(
+    tmp_path: Path,
+    missing_suffix: str,
+) -> None:
     """Each required PLINK file is reported when absent."""
 
     prefix = tmp_path / "example"
@@ -58,7 +64,7 @@ def test_validate_plink_prefix_missing_file(tmp_path, missing_suffix) -> None:
         validate_plink_prefix(prefix)
 
 
-def test_validate_plink_prefix_empty_file(tmp_path) -> None:
+def test_validate_plink_prefix_empty_file(tmp_path: Path) -> None:
     """Empty PLINK files are rejected."""
 
     prefix = tmp_path / "example"
@@ -76,11 +82,11 @@ def test_validate_k_accepts_two_or_more() -> None:
 
 
 @pytest.mark.parametrize("bad_k", [1, 0, -1, 2.5, True])
-def test_validate_k_rejects_invalid_values(bad_k) -> None:
+def test_validate_k_rejects_invalid_values(bad_k: object) -> None:
     """Invalid K values raise ValueError."""
 
     with pytest.raises(ValueError):
-        validate_k(bad_k)  # type: ignore[arg-type]
+        validate_k(cast(int, bad_k))
 
 
 def test_validate_threads() -> None:
@@ -91,7 +97,7 @@ def test_validate_threads() -> None:
     with pytest.raises(ValueError):
         validate_threads(0)
     with pytest.raises(ValueError):
-        validate_threads(True)  # type: ignore[arg-type]
+        validate_threads(True)
 
 
 def test_validate_seed() -> None:
@@ -102,10 +108,10 @@ def test_validate_seed() -> None:
     with pytest.raises(ValueError):
         validate_seed(-1)
     with pytest.raises(ValueError):
-        validate_seed(False)  # type: ignore[arg-type]
+        validate_seed(False)
 
 
-def test_ensure_output_parent_creates_directory(tmp_path) -> None:
+def test_ensure_output_parent_creates_directory(tmp_path: Path) -> None:
     """The output prefix parent directory is created."""
 
     output = ensure_output_parent(tmp_path / "with spaces" / "example_k2")

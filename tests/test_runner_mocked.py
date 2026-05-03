@@ -38,7 +38,10 @@ def _write_plink(prefix: Path) -> None:
     (prefix.parent / f"{prefix.name}.fam").write_text(FAM_TEXT)
 
 
-def _patch_environment(monkeypatch, runner: OpenAdmixtureRunner) -> None:
+def _patch_environment(
+    monkeypatch: pytest.MonkeyPatch,
+    runner: OpenAdmixtureRunner,
+) -> None:
     monkeypatch.setattr(
         runner,
         "check_julia",
@@ -47,7 +50,10 @@ def _patch_environment(monkeypatch, runner: OpenAdmixtureRunner) -> None:
     monkeypatch.setattr(runner, "check_openadmixture", lambda: True)
 
 
-def test_runner_success_with_mocked_subprocess(tmp_path, monkeypatch) -> None:
+def test_runner_success_with_mocked_subprocess(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     """A successful mocked Julia run returns parsed DataFrames."""
 
     bfile = tmp_path / "input data" / "example"
@@ -56,7 +62,15 @@ def test_runner_success_with_mocked_subprocess(tmp_path, monkeypatch) -> None:
     runner = OpenAdmixtureRunner()
     _patch_environment(monkeypatch, runner)
 
-    def fake_run(command, *, shell, capture_output, text, timeout, check):
+    def fake_run(
+        command: tuple[str, ...],
+        *,
+        shell: bool,
+        capture_output: bool,
+        text: bool,
+        timeout: float | None,
+        check: bool,
+    ) -> subprocess.CompletedProcess[str]:
         assert shell is False
         assert capture_output is True
         assert text is True
@@ -79,7 +93,10 @@ def test_runner_success_with_mocked_subprocess(tmp_path, monkeypatch) -> None:
     assert result.stdout == "stdout"
 
 
-def test_runner_failure_with_mocked_subprocess(tmp_path, monkeypatch) -> None:
+def test_runner_failure_with_mocked_subprocess(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     """A nonzero Julia exit status raises OpenAdmixtureRunError."""
 
     bfile = tmp_path / "example"
@@ -88,7 +105,15 @@ def test_runner_failure_with_mocked_subprocess(tmp_path, monkeypatch) -> None:
     runner = OpenAdmixtureRunner()
     _patch_environment(monkeypatch, runner)
 
-    def fake_run(command, *, shell, capture_output, text, timeout, check):
+    def fake_run(
+        command: tuple[str, ...],
+        *,
+        shell: bool,
+        capture_output: bool,
+        text: bool,
+        timeout: float | None,
+        check: bool,
+    ) -> subprocess.CompletedProcess[str]:
         assert shell is False
         return subprocess.CompletedProcess(command, 1, "", "boom")
 
@@ -98,7 +123,10 @@ def test_runner_failure_with_mocked_subprocess(tmp_path, monkeypatch) -> None:
         runner.run(bfile=bfile, k=2, out_prefix=out_prefix)
 
 
-def test_runner_missing_output_with_mocked_subprocess(tmp_path, monkeypatch) -> None:
+def test_runner_missing_output_with_mocked_subprocess(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     """A zero exit status without Q output raises OutputParseError."""
 
     bfile = tmp_path / "example"
@@ -107,7 +135,15 @@ def test_runner_missing_output_with_mocked_subprocess(tmp_path, monkeypatch) -> 
     runner = OpenAdmixtureRunner()
     _patch_environment(monkeypatch, runner)
 
-    def fake_run(command, *, shell, capture_output, text, timeout, check):
+    def fake_run(
+        command: tuple[str, ...],
+        *,
+        shell: bool,
+        capture_output: bool,
+        text: bool,
+        timeout: float | None,
+        check: bool,
+    ) -> subprocess.CompletedProcess[str]:
         assert shell is False
         return subprocess.CompletedProcess(command, 0, "", "")
 
@@ -118,8 +154,8 @@ def test_runner_missing_output_with_mocked_subprocess(tmp_path, monkeypatch) -> 
 
 
 def test_runner_missing_openadmixture_raises_helpful_error(
-    tmp_path,
-    monkeypatch,
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     """Missing OpenADMIXTURE.jl raises install guidance before execution."""
 

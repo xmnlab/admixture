@@ -34,8 +34,8 @@ Python packaging and Python dependencies.
 
 Keep production dependencies in `[tool.poetry.dependencies]`. Keep development
 dependencies in `[tool.poetry.group.dev.dependencies]`, mirroring them in
-`[project.optional-dependencies].dev` so `pip install -e ".[dev]"` continues
-to work. Do not remove or rewrite dependency entries unless the task explicitly
+`[project.optional-dependencies].dev` so `pip install -e ".[dev]"` continues to
+work. Do not remove or rewrite dependency entries unless the task explicitly
 requires it. When dependencies change, update `poetry.lock` and run
 `poetry check --lock`.
 

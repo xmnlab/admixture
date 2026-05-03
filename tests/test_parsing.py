@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from pathlib import Path
+
 import numpy as np
 import pytest
 
@@ -19,7 +21,7 @@ Q_TEXT = """0.8 0.2
 """
 
 
-def test_read_fam(tmp_path) -> None:
+def test_read_fam(tmp_path: Path) -> None:
     """FAM files are parsed as six whitespace-delimited columns."""
 
     fam_path = tmp_path / "example.fam"
@@ -38,7 +40,7 @@ def test_read_fam(tmp_path) -> None:
     assert fam["individual_id"].tolist() == ["S1", "S2", "S3"]
 
 
-def test_read_q_with_fam_index(tmp_path) -> None:
+def test_read_q_with_fam_index(tmp_path: Path) -> None:
     """Q files are parsed with ancestry columns and individual IDs."""
 
     fam_path = tmp_path / "example.fam"
@@ -53,7 +55,7 @@ def test_read_q_with_fam_index(tmp_path) -> None:
     np.testing.assert_allclose(q.sum(axis=1).to_numpy(), 1.0)
 
 
-def test_read_q_row_count_mismatch(tmp_path) -> None:
+def test_read_q_row_count_mismatch(tmp_path: Path) -> None:
     """A Q/.fam row mismatch raises a parsing error."""
 
     fam_path = tmp_path / "example.fam"
@@ -65,7 +67,7 @@ def test_read_q_row_count_mismatch(tmp_path) -> None:
         read_q(q_path, fam_path)
 
 
-def test_read_q_invalid_numeric(tmp_path) -> None:
+def test_read_q_invalid_numeric(tmp_path: Path) -> None:
     """Non-numeric Q files raise a parsing error."""
 
     q_path = tmp_path / "example.Q"
@@ -75,7 +77,7 @@ def test_read_q_invalid_numeric(tmp_path) -> None:
         read_q(q_path)
 
 
-def test_read_q_bad_row_sums(tmp_path) -> None:
+def test_read_q_bad_row_sums(tmp_path: Path) -> None:
     """Q rows must sum approximately to one."""
 
     q_path = tmp_path / "example.Q"
@@ -85,7 +87,7 @@ def test_read_q_bad_row_sums(tmp_path) -> None:
         read_q(q_path)
 
 
-def test_read_p(tmp_path) -> None:
+def test_read_p(tmp_path: Path) -> None:
     """P files are parsed as numeric matrices with generic SNP columns."""
 
     p_path = tmp_path / "example.P"
@@ -97,7 +99,7 @@ def test_read_p(tmp_path) -> None:
     assert p.shape == (2, 3)
 
 
-def test_find_output_files_common_patterns(tmp_path) -> None:
+def test_find_output_files_common_patterns(tmp_path: Path) -> None:
     """Output discovery supports the wrapper's default file names."""
 
     prefix = tmp_path / "example"
@@ -112,7 +114,7 @@ def test_find_output_files_common_patterns(tmp_path) -> None:
     assert outputs.log == tmp_path / "example.log"
 
 
-def test_find_output_files_ambiguous_q(tmp_path) -> None:
+def test_find_output_files_ambiguous_q(tmp_path: Path) -> None:
     """Ambiguous Q candidates are rejected."""
 
     prefix = tmp_path / "example"

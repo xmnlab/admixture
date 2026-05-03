@@ -167,7 +167,7 @@ def find_output_files(out_prefix: str | Path, k: int) -> OutputFiles:
     if not q_existing:
         tried = "\n".join(f"  - {path}" for path in q_candidates)
         raise OutputParseError(
-            "Could not find an OpenADMIXTURE Q output file. Tried:\n" f"{tried}"
+            f"Could not find an OpenADMIXTURE Q output file. Tried:\n{tried}"
         )
 
     p_existing = _existing_unique(p_candidates, label="P")
