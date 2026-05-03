@@ -66,14 +66,15 @@ docstring source of truth.
 
 ## Tests and checks
 
-Unit tests must pass without Julia installed:
+Run tests with:
 
 ```bash
 makim tests.unit
 ```
 
-Optional integration tests require Julia, OpenADMIXTURE.jl, and a real binary
-PLINK prefix via `ADMIXTURE_TEST_PLINK_PREFIX`.
+The OpenADMIXTURE runtime test requires Julia, OpenADMIXTURE.jl, and a real
+binary PLINK prefix via `ADMIXTURE_TEST_PLINK_PREFIX`; it skips itself when the
+local runtime/data prerequisites are not configured.
 
 Common checks:
 

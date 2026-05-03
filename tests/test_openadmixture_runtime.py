@@ -1,6 +1,5 @@
 """
-title: >-
-  Optional integration tests requiring Julia, OpenADMIXTURE.jl and PLINK data.
+title: Tests requiring Julia, OpenADMIXTURE.jl and PLINK data.
 """
 
 from __future__ import annotations
@@ -16,8 +15,7 @@ import pytest
 from admixture import OpenAdmixtureRunner
 
 
-@pytest.mark.integration
-def test_openadmixture_integration(tmp_path: Path) -> None:
+def test_openadmixture_runtime(tmp_path: Path) -> None:
     """
     title: Run OpenADMIXTURE.jl against a user-provided PLINK prefix.
     parameters:
@@ -27,7 +25,9 @@ def test_openadmixture_integration(tmp_path: Path) -> None:
 
     prefix = os.environ.get("ADMIXTURE_TEST_PLINK_PREFIX")
     if not prefix:
-        pytest.skip("Set ADMIXTURE_TEST_PLINK_PREFIX to run integration test")
+        pytest.skip(
+            "Set ADMIXTURE_TEST_PLINK_PREFIX to run the OpenADMIXTURE runtime test"
+        )
     if shutil.which("julia") is None:
         pytest.skip("Julia executable is not available on PATH")
 
@@ -39,7 +39,7 @@ def test_openadmixture_integration(tmp_path: Path) -> None:
     result = runner.run(
         bfile=prefix,
         k=2,
-        out_prefix=tmp_path / "integration",
+        out_prefix=tmp_path / "runtime",
         seed=1,
         threads=1,
     )

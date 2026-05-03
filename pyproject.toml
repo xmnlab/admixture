@@ -10,27 +10,6 @@ license = "BSD-3-Clause"
 requires-python = ">=3.10,<4"
 dynamic = ["dependencies"]
 
-[project.optional-dependencies]
-dev = [
-  "pytest>=7.3.2",
-  "pytest-cov>=4.1.0",
-  "pytest-xdist>=3.8.0",
-  "coverage>=7.2.7",
-  "pre-commit>=3.3.2",
-  "ruff>=0.9.5",
-  "mypy>=1.6.0",
-  "bandit>=1.7.5",
-  "vulture>=2.9.1",
-  "mccabe>=0.6.1",
-  "ipykernel>=6.0.0",
-  "ipython>=7.0.0",
-  "quarto-cli>=1.9.0",
-  "jupyterlab>=4.0.7",
-  "makim==1.27.0",
-  "nbmake>=1.5.3",
-  "douki>=0.12.1",
-]
-
 [build-system]
 requires = ["poetry-core>=2"]
 build-backend = "poetry.core.masonry.api"
@@ -68,16 +47,13 @@ ipykernel = ">=6.0.0"
 ipython = ">=7.0.0"
 quarto-cli = ">=1.9.0"
 jupyterlab = ">=4.0.7"
-makim = "1.27.0"
+makim = "1.29.0"
 nbmake = ">=1.5.3"
 douki = ">=0.12.1"
 
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-markers = [
-  "integration: tests requiring Julia and OpenADMIXTURE.jl",
-]
 filterwarnings = [
   "error::RuntimeWarning",
 ]

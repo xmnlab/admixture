@@ -56,13 +56,13 @@ Paths with spaces are supported because the runner passes a list of subprocess
 arguments and uses `shell=False`. If you see path issues, include
 `result.command` or the raised exception text in your bug report.
 
-## Integration tests skip
+## OpenADMIXTURE runtime test skip
 
 Set `ADMIXTURE_TEST_PLINK_PREFIX` to a real PLINK prefix:
 
 ```bash
 export ADMIXTURE_TEST_PLINK_PREFIX=/path/to/example
-pytest -m integration
+pytest tests
 ```
 
 Optionally set `ADMIXTURE_TEST_JULIA_PROJECT` when OpenADMIXTURE.jl is installed

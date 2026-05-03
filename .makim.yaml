@@ -29,7 +29,7 @@ groups:
   tests:
     tasks:
       unit:
-        help: run unit tests that do not require Julia/OpenADMIXTURE.jl
+        help: run the project test suite
         args:
           path:
             help: test path to run
@@ -38,28 +38,15 @@ groups:
           params:
             help: extra pytest parameters
             type: string
-            default: "-m 'not integration'"
-        run: pytest ${{ args.path }} ${{ args.params }}
-
-      integration:
-        help: run optional Julia/OpenADMIXTURE.jl integration tests
-        args:
-          path:
-            help: test path to run
-            type: string
-            default: tests
-          params:
-            help: extra pytest parameters
-            type: string
-            default: "-m integration"
+            default: ""
         run: pytest ${{ args.path }} ${{ args.params }}
 
       all:
-        help: run all tests, including integration tests when configured
+        help: run all tests
         run: pytest tests
 
       ci:
-        help: run CI test suite that must pass without Julia installed
+        help: run CI test suite
         hooks:
           pre-run:
             - task: tests.unit
@@ -93,22 +80,14 @@ groups:
         run: |
           mkdir -p .quarto-tmp .quarto-cache .quarto-home .deno-cache
           rm -rf docs/_site build
-          TMPDIR="$PWD/.quarto-tmp" \
-          XDG_CACHE_HOME="$PWD/.quarto-cache" \
-          DENO_DIR="$PWD/.deno-cache" \
-          HOME="$PWD/.quarto-home" \
-            quarto render docs
+          env TMPDIR=$PWD/.quarto-tmp XDG_CACHE_HOME=$PWD/.quarto-cache DENO_DIR=$PWD/.deno-cache HOME=$PWD/.quarto-home quarto render docs
           cp -a docs/_site build
 
       preview:
         help: preview the Quarto documentation site locally
         run: |
           mkdir -p .quarto-tmp .quarto-cache .quarto-home .deno-cache
-          TMPDIR="$PWD/.quarto-tmp" \
-          XDG_CACHE_HOME="$PWD/.quarto-cache" \
-          DENO_DIR="$PWD/.deno-cache" \
-          HOME="$PWD/.quarto-home" \
-            quarto preview docs
+          env TMPDIR=$PWD/.quarto-tmp XDG_CACHE_HOME=$PWD/.quarto-cache DENO_DIR=$PWD/.deno-cache HOME=$PWD/.quarto-home quarto preview docs
 
   package:
     tasks:

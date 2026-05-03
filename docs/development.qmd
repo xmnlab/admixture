@@ -13,7 +13,7 @@ This project uses a `src/` package layout and Python 3.10+.
 
 ## Tests
 
-Run unit tests that do not require Julia:
+Run the test suite:
 
 ```bash
 makim tests.unit
@@ -25,9 +25,9 @@ Run all tests:
 makim tests.all
 ```
 
-The integration test is skipped unless `ADMIXTURE_TEST_PLINK_PREFIX` points to a
-real binary PLINK prefix and OpenADMIXTURE.jl is installed in the selected Julia
-environment.
+The OpenADMIXTURE runtime test is skipped unless `ADMIXTURE_TEST_PLINK_PREFIX`
+points to a real binary PLINK prefix and OpenADMIXTURE.jl is installed in the
+selected Julia environment.
 
 ## Lint and type checks
 
@@ -58,4 +58,4 @@ Generated site files are written to `docs/_site/` and should not be committed.
 - Keep Julia as an external runtime.
 - Use `subprocess.run(args, shell=False, capture_output=True, text=True)`.
 - Treat PLINK input as a prefix with `.bed`, `.bim`, and `.fam` files.
-- Keep pure Python unit tests independent of Julia.
+- Keep parsing and validation tests independent of Julia where possible.

@@ -238,20 +238,18 @@ the shared prefix, not a directory.
 Check `result.stdout`/`result.stderr` or the raised exception. Remove stale
 outputs if multiple candidate `.Q` files match the same output prefix.
 
-### Integration tests skipped
+### OpenADMIXTURE test skipped
 
-Pure Python tests do not require Julia. The integration test requires all of:
+The runtime test requires all of:
 
 - Julia on `PATH`;
 - OpenADMIXTURE.jl installed;
 - `ADMIXTURE_TEST_PLINK_PREFIX` set to a real PLINK prefix.
 
-Run unit tests only with:
+Run tests with:
 
 ```bash
 makim tests.unit
-# or directly:
-pytest -m "not integration"
 ```
 
 ## Citation and attribution
