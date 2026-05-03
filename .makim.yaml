@@ -39,7 +39,12 @@ groups:
             help: extra pytest parameters
             type: string
             default: ""
-        run: pytest ${{ args.path }} ${{ args.params }}
+        run: |
+          pytest ${{ args.path }} \
+            --cov=admixture \
+            --cov-report=term-missing \
+            --cov-fail-under=85 \
+            ${{ args.params }}
 
       all:
         help: run all tests
