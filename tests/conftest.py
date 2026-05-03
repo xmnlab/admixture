@@ -1,4 +1,6 @@
-"""Test configuration for the source-layout package."""
+"""
+title: Test configuration for the source-layout package.
+"""
 
 from __future__ import annotations
 

@@ -1,4 +1,6 @@
-"""Tests for Julia/OpenADMIXTURE environment metadata."""
+"""
+title: Tests for Julia/OpenADMIXTURE environment metadata.
+"""
 
 from __future__ import annotations
 
@@ -12,7 +14,14 @@ from admixture.julia_env import JuliaInfo, find_julia
 
 
 def test_version_info(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
-    """Version metadata includes Python, Julia and backend fields."""
+    """
+    title: Version metadata includes Python, Julia and backend fields.
+    parameters:
+      monkeypatch:
+        type: pytest.MonkeyPatch
+      tmp_path:
+        type: Path
+    """
 
     runner = OpenAdmixtureRunner(project_dir=tmp_path / "julia_env")
     monkeypatch.setattr(
@@ -40,7 +49,12 @@ def test_version_info(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
 def test_find_julia_missing_raises_helpful_error(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    """Missing Julia raises the package-specific helpful exception."""
+    """
+    title: Missing Julia raises the package-specific helpful exception.
+    parameters:
+      monkeypatch:
+        type: pytest.MonkeyPatch
+    """
 
     monkeypatch.setattr("admixture.julia_env.shutil.which", lambda _: None)
 

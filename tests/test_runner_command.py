@@ -1,4 +1,6 @@
-"""Tests for OpenAdmixtureRunner command construction."""
+"""
+title: Tests for OpenAdmixtureRunner command construction.
+"""
 
 from __future__ import annotations
 
@@ -10,7 +12,12 @@ from admixture import OpenAdmixtureRunner
 def test_build_command_uses_argument_tuple_and_preserves_spaces(
     tmp_path: Path,
 ) -> None:
-    """Paths with spaces remain single subprocess arguments."""
+    """
+    title: Paths with spaces remain single subprocess arguments.
+    parameters:
+      tmp_path:
+        type: Path
+    """
 
     project_dir = tmp_path / "Julia Project"
     bfile = tmp_path / "plink data" / "example"
@@ -35,7 +42,12 @@ def test_build_command_uses_argument_tuple_and_preserves_spaces(
 
 
 def test_build_command_omits_optional_args_when_absent(tmp_path: Path) -> None:
-    """Project, seed and thread args are emitted only when requested."""
+    """
+    title: Project, seed and thread args are emitted only when requested.
+    parameters:
+      tmp_path:
+        type: Path
+    """
 
     runner = OpenAdmixtureRunner(julia=Path("julia"))
     command = runner._build_command(
@@ -52,7 +64,12 @@ def test_build_command_omits_optional_args_when_absent(tmp_path: Path) -> None:
 
 
 def test_build_command_accepts_extra_args(tmp_path: Path) -> None:
-    """Extra algorithm parameters are converted to CLI flags."""
+    """
+    title: Extra algorithm parameters are converted to CLI flags.
+    parameters:
+      tmp_path:
+        type: Path
+    """
 
     runner = OpenAdmixtureRunner()
     command = runner._build_command(

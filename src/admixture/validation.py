@@ -1,4 +1,6 @@
-"""Validation helpers for PLINK input and runner parameters."""
+"""
+title: Validation helpers for PLINK input and runner parameters.
+"""
 
 from __future__ import annotations
 
@@ -10,7 +12,18 @@ from .exceptions import PlinkInputError
 
 @dataclass(frozen=True)
 class PlinkFiles:
-    """Paths belonging to a binary PLINK dataset prefix."""
+    """
+    title: Paths belonging to a binary PLINK dataset prefix.
+    attributes:
+      prefix:
+        type: Path
+      bed:
+        type: Path
+      bim:
+        type: Path
+      fam:
+        type: Path
+    """
 
     prefix: Path
     bed: Path
@@ -19,6 +32,14 @@ class PlinkFiles:
 
 
 def _normalise_plink_prefix(prefix: str | Path) -> Path:
+    """
+    title: Normalize a PLINK component path to its dataset prefix.
+    parameters:
+      prefix:
+        type: str | Path
+    returns:
+      type: Path
+    """
     path = Path(prefix).expanduser()
     if path.suffix.lower() in {".bed", ".bim", ".fam"}:
         return path.with_suffix("")
@@ -26,18 +47,13 @@ def _normalise_plink_prefix(prefix: str | Path) -> Path:
 
 
 def validate_plink_prefix(prefix: str | Path) -> PlinkFiles:
-    """Validate a binary PLINK prefix and return its component files.
-
-    Parameters
-    ----------
-    prefix
-        PLINK file prefix, not normally including ``.bed``. Passing a path that
-        ends in ``.bed``, ``.bim`` or ``.fam`` is normalized to the prefix.
-
-    Raises
-    ------
-    PlinkInputError
-        If any of the ``.bed``, ``.bim`` or ``.fam`` files are missing or empty.
+    """
+    title: Validate a binary PLINK prefix and return its component files.
+    parameters:
+      prefix:
+        type: str | Path
+    returns:
+      type: PlinkFiles
     """
     normalised = _normalise_plink_prefix(prefix)
     files = PlinkFiles(
@@ -75,7 +91,14 @@ def validate_plink_prefix(prefix: str | Path) -> PlinkFiles:
 
 
 def validate_k(k: int) -> int:
-    """Validate the number of ancestral populations."""
+    """
+    title: Validate the number of ancestral populations.
+    parameters:
+      k:
+        type: int
+    returns:
+      type: int
+    """
     if isinstance(k, bool) or not isinstance(k, int):
         raise ValueError("k must be an integer greater than or equal to 2.")
     if k < 2:
@@ -84,7 +107,14 @@ def validate_k(k: int) -> int:
 
 
 def validate_threads(threads: int | None) -> int | None:
-    """Validate the requested Julia thread count."""
+    """
+    title: Validate the requested Julia thread count.
+    parameters:
+      threads:
+        type: int | None
+    returns:
+      type: int | None
+    """
     if threads is None:
         return None
     if isinstance(threads, bool) or not isinstance(threads, int):
@@ -97,7 +127,14 @@ def validate_threads(threads: int | None) -> int | None:
 
 
 def validate_seed(seed: int | None) -> int | None:
-    """Validate a random seed."""
+    """
+    title: Validate a random seed.
+    parameters:
+      seed:
+        type: int | None
+    returns:
+      type: int | None
+    """
     if seed is None:
         return None
     if isinstance(seed, bool) or not isinstance(seed, int):
@@ -108,7 +145,14 @@ def validate_seed(seed: int | None) -> int | None:
 
 
 def ensure_output_parent(path: str | Path) -> Path:
-    """Ensure the parent directory for an output prefix exists."""
+    """
+    title: Ensure the parent directory for an output prefix exists.
+    parameters:
+      path:
+        type: str | Path
+    returns:
+      type: Path
+    """
     output_prefix = Path(path).expanduser()
     parent = output_prefix.parent
     if parent != Path(""):

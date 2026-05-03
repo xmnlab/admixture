@@ -1,4 +1,6 @@
-"""Runner tests that mock Julia subprocess execution."""
+"""
+title: Runner tests that mock Julia subprocess execution.
+"""
 
 from __future__ import annotations
 
@@ -32,6 +34,12 @@ P_TEXT = """0.1 0.2 0.3
 
 
 def _write_plink(prefix: Path) -> None:
+    """
+    title: Write a minimal binary PLINK trio for runner tests.
+    parameters:
+      prefix:
+        type: Path
+    """
     prefix.parent.mkdir(parents=True, exist_ok=True)
     (prefix.parent / f"{prefix.name}.bed").write_bytes(b"plink-bed")
     (prefix.parent / f"{prefix.name}.bim").write_text("1 rs1 0 1 A C\n")
@@ -42,6 +50,14 @@ def _patch_environment(
     monkeypatch: pytest.MonkeyPatch,
     runner: OpenAdmixtureRunner,
 ) -> None:
+    """
+    title: Patch runner environment checks for subprocess tests.
+    parameters:
+      monkeypatch:
+        type: pytest.MonkeyPatch
+      runner:
+        type: OpenAdmixtureRunner
+    """
     monkeypatch.setattr(
         runner,
         "check_julia",
@@ -54,7 +70,14 @@ def test_runner_success_with_mocked_subprocess(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    """A successful mocked Julia run returns parsed DataFrames."""
+    """
+    title: A successful mocked Julia run returns parsed DataFrames.
+    parameters:
+      tmp_path:
+        type: Path
+      monkeypatch:
+        type: pytest.MonkeyPatch
+    """
 
     bfile = tmp_path / "input data" / "example"
     out_prefix = tmp_path / "outputs" / "example_k2"
@@ -71,6 +94,24 @@ def test_runner_success_with_mocked_subprocess(
         timeout: float | None,
         check: bool,
     ) -> subprocess.CompletedProcess[str]:
+        """
+        title: Fake subprocess.run for runner tests.
+        parameters:
+          command:
+            type: tuple[str, Ellipsis]
+          shell:
+            type: bool
+          capture_output:
+            type: bool
+          text:
+            type: bool
+          timeout:
+            type: float | None
+          check:
+            type: bool
+        returns:
+          type: subprocess.CompletedProcess[str]
+        """
         assert shell is False
         assert capture_output is True
         assert text is True
@@ -97,7 +138,14 @@ def test_runner_failure_with_mocked_subprocess(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    """A nonzero Julia exit status raises OpenAdmixtureRunError."""
+    """
+    title: A nonzero Julia exit status raises OpenAdmixtureRunError.
+    parameters:
+      tmp_path:
+        type: Path
+      monkeypatch:
+        type: pytest.MonkeyPatch
+    """
 
     bfile = tmp_path / "example"
     out_prefix = tmp_path / "out"
@@ -114,6 +162,24 @@ def test_runner_failure_with_mocked_subprocess(
         timeout: float | None,
         check: bool,
     ) -> subprocess.CompletedProcess[str]:
+        """
+        title: Fake subprocess.run for runner tests.
+        parameters:
+          command:
+            type: tuple[str, Ellipsis]
+          shell:
+            type: bool
+          capture_output:
+            type: bool
+          text:
+            type: bool
+          timeout:
+            type: float | None
+          check:
+            type: bool
+        returns:
+          type: subprocess.CompletedProcess[str]
+        """
         assert shell is False
         return subprocess.CompletedProcess(command, 1, "", "boom")
 
@@ -127,7 +193,14 @@ def test_runner_missing_output_with_mocked_subprocess(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    """A zero exit status without Q output raises OutputParseError."""
+    """
+    title: A zero exit status without Q output raises OutputParseError.
+    parameters:
+      tmp_path:
+        type: Path
+      monkeypatch:
+        type: pytest.MonkeyPatch
+    """
 
     bfile = tmp_path / "example"
     out_prefix = tmp_path / "out"
@@ -144,6 +217,24 @@ def test_runner_missing_output_with_mocked_subprocess(
         timeout: float | None,
         check: bool,
     ) -> subprocess.CompletedProcess[str]:
+        """
+        title: Fake subprocess.run for runner tests.
+        parameters:
+          command:
+            type: tuple[str, Ellipsis]
+          shell:
+            type: bool
+          capture_output:
+            type: bool
+          text:
+            type: bool
+          timeout:
+            type: float | None
+          check:
+            type: bool
+        returns:
+          type: subprocess.CompletedProcess[str]
+        """
         assert shell is False
         return subprocess.CompletedProcess(command, 0, "", "")
 
@@ -157,7 +248,14 @@ def test_runner_missing_openadmixture_raises_helpful_error(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    """Missing OpenADMIXTURE.jl raises install guidance before execution."""
+    """
+    title: Missing OpenADMIXTURE.jl raises install guidance before execution.
+    parameters:
+      tmp_path:
+        type: Path
+      monkeypatch:
+        type: pytest.MonkeyPatch
+    """
 
     bfile = tmp_path / "example"
     _write_plink(bfile)

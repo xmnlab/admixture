@@ -1,4 +1,6 @@
-"""Utilities for locating Julia and managing OpenADMIXTURE.jl."""
+"""
+title: Utilities for locating Julia and managing OpenADMIXTURE.jl.
+"""
 
 from __future__ import annotations
 
@@ -23,13 +25,28 @@ OPENADMIXTURE_UUID = "425c031d-9e5b-441b-a07e-4acde9a966a3"
 
 @dataclass(frozen=True)
 class JuliaInfo:
-    """Basic information about the Julia runtime."""
+    """
+    title: Basic information about the Julia runtime.
+    attributes:
+      executable:
+        type: Path
+      version:
+        type: str
+    """
 
     executable: Path
     version: str
 
 
 def _looks_like_path(value: str) -> bool:
+    """
+    title: Return whether a Julia argument appears to be a filesystem path.
+    parameters:
+      value:
+        type: str
+    returns:
+      type: bool
+    """
     return (
         Path(value).is_absolute()
         or os.sep in value
@@ -39,7 +56,14 @@ def _looks_like_path(value: str) -> bool:
 
 
 def find_julia(julia: str | Path = "julia") -> Path:
-    """Find a Julia executable by explicit path or on ``PATH``."""
+    """
+    title: Find a Julia executable by explicit path or on ``PATH``.
+    parameters:
+      julia:
+        type: str | Path
+    returns:
+      type: Path
+    """
     julia_text = os.fspath(julia)
     if _looks_like_path(julia_text):
         candidate = Path(julia_text).expanduser()
@@ -62,13 +86,28 @@ def find_julia(julia: str | Path = "julia") -> Path:
 
 
 def _project_arg(project_dir: str | Path | None) -> list[str]:
+    """
+    title: Build the Julia project argument list.
+    parameters:
+      project_dir:
+        type: str | Path | None
+    returns:
+      type: list[str]
+    """
     if project_dir is None:
         return []
     return [f"--project={Path(project_dir).expanduser()}"]
 
 
 def get_julia_version(julia: str | Path = "julia") -> str:
-    """Return ``julia --version`` output for the selected executable."""
+    """
+    title: Return ``julia --version`` output for the selected executable.
+    parameters:
+      julia:
+        type: str | Path
+    returns:
+      type: str
+    """
     julia_text = os.fspath(julia)
     if _looks_like_path(julia_text):
         executable = Path(julia_text).expanduser()
@@ -106,7 +145,16 @@ def check_openadmixture_installed(
     julia: str | Path = "julia",
     project_dir: str | Path | None = None,
 ) -> bool:
-    """Return whether OpenADMIXTURE.jl imports in the selected environment."""
+    """
+    title: Return whether OpenADMIXTURE.jl imports in the selected environment.
+    parameters:
+      julia:
+        type: str | Path
+      project_dir:
+        type: str | Path | None
+    returns:
+      type: bool
+    """
     executable = find_julia(julia)
     command = [
         str(executable),
@@ -128,7 +176,16 @@ def get_openadmixture_version(
     julia: str | Path = "julia",
     project_dir: str | Path | None = None,
 ) -> str | None:
-    """Return the installed OpenADMIXTURE.jl version, if discoverable."""
+    """
+    title: Return the installed OpenADMIXTURE.jl version, if discoverable.
+    parameters:
+      julia:
+        type: str | Path
+      project_dir:
+        type: str | Path | None
+    returns:
+      type: str | None
+    """
     executable = find_julia(julia)
     julia_code = f"""
 using OpenADMIXTURE
@@ -160,7 +217,14 @@ def bootstrap_julia_project(
     project_dir: str | Path,
     julia: str | Path = "julia",
 ) -> None:
-    """Create a Julia project and install OpenADMIXTURE.jl into it."""
+    """
+    title: Create a Julia project and install OpenADMIXTURE.jl into it.
+    parameters:
+      project_dir:
+        type: str | Path
+      julia:
+        type: str | Path
+    """
     executable = find_julia(julia)
     project_path = Path(project_dir).expanduser()
     project_path.mkdir(parents=True, exist_ok=True)

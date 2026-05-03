@@ -1,4 +1,6 @@
-"""Result containers returned by :class:`admixture.OpenAdmixtureRunner`."""
+"""
+title: Result containers returned by :class:`admixture.OpenAdmixtureRunner`.
+"""
 
 from __future__ import annotations
 
@@ -11,7 +13,34 @@ import pandas as pd
 
 @dataclass(frozen=True)
 class OpenAdmixtureResult:
-    """Parsed result and execution metadata from an OpenADMIXTURE run."""
+    """
+    title: Parsed result and execution metadata from an OpenADMIXTURE run.
+    attributes:
+      q:
+        type: pd.DataFrame
+      p:
+        type: pd.DataFrame | None
+      q_path:
+        type: Path
+      p_path:
+        type: Path | None
+      log_path:
+        type: Path | None
+      out_prefix:
+        type: Path
+      k:
+        type: int
+      command:
+        type: tuple[str, Ellipsis]
+      returncode:
+        type: int
+      stdout:
+        type: str
+      stderr:
+        type: str
+      metadata:
+        type: dict[str, Any]
+    """
 
     q: pd.DataFrame
     p: pd.DataFrame | None
@@ -27,7 +56,12 @@ class OpenAdmixtureResult:
     metadata: dict[str, Any]
 
     def to_csv(self, prefix: str | Path) -> None:
-        """Write parsed Q and P tables to CSV files using ``prefix``."""
+        """
+        title: Write parsed Q and P tables to CSV files using ``prefix``.
+        parameters:
+          prefix:
+            type: str | Path
+        """
         output_prefix = Path(prefix)
         output_prefix.parent.mkdir(parents=True, exist_ok=True)
         self.q.to_csv(Path(f"{output_prefix}.Q.csv"))
@@ -35,7 +69,11 @@ class OpenAdmixtureResult:
             self.p.to_csv(Path(f"{output_prefix}.P.csv"), index=False)
 
     def summary(self) -> dict[str, Any]:
-        """Return a compact summary of the result."""
+        """
+        title: Return a compact summary of the result.
+        returns:
+          type: dict[str, Any]
+        """
         return {
             "k": self.k,
             "n_individuals": int(self.q.shape[0]),

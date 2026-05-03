@@ -1,4 +1,6 @@
-"""Version helpers for :mod:`admixture`."""
+"""
+title: Version helpers for :mod:`admixture`.
+"""
 
 from __future__ import annotations
 

@@ -1,4 +1,6 @@
-"""Tests for .fam, .Q, .P and output-discovery parsers."""
+"""
+title: Tests for .fam, .Q, .P and output-discovery parsers.
+"""
 
 from __future__ import annotations
 
@@ -22,7 +24,12 @@ Q_TEXT = """0.8 0.2
 
 
 def test_read_fam(tmp_path: Path) -> None:
-    """FAM files are parsed as six whitespace-delimited columns."""
+    """
+    title: FAM files are parsed as six whitespace-delimited columns.
+    parameters:
+      tmp_path:
+        type: Path
+    """
 
     fam_path = tmp_path / "example.fam"
     fam_path.write_text(FAM_TEXT)
@@ -41,7 +48,12 @@ def test_read_fam(tmp_path: Path) -> None:
 
 
 def test_read_q_with_fam_index(tmp_path: Path) -> None:
-    """Q files are parsed with ancestry columns and individual IDs."""
+    """
+    title: Q files are parsed with ancestry columns and individual IDs.
+    parameters:
+      tmp_path:
+        type: Path
+    """
 
     fam_path = tmp_path / "example.fam"
     q_path = tmp_path / "example.Q"
@@ -56,7 +68,12 @@ def test_read_q_with_fam_index(tmp_path: Path) -> None:
 
 
 def test_read_q_row_count_mismatch(tmp_path: Path) -> None:
-    """A Q/.fam row mismatch raises a parsing error."""
+    """
+    title: A Q/.fam row mismatch raises a parsing error.
+    parameters:
+      tmp_path:
+        type: Path
+    """
 
     fam_path = tmp_path / "example.fam"
     q_path = tmp_path / "example.Q"
@@ -68,7 +85,12 @@ def test_read_q_row_count_mismatch(tmp_path: Path) -> None:
 
 
 def test_read_q_invalid_numeric(tmp_path: Path) -> None:
-    """Non-numeric Q files raise a parsing error."""
+    """
+    title: Non-numeric Q files raise a parsing error.
+    parameters:
+      tmp_path:
+        type: Path
+    """
 
     q_path = tmp_path / "example.Q"
     q_path.write_text("0.8 nope\n")
@@ -78,7 +100,12 @@ def test_read_q_invalid_numeric(tmp_path: Path) -> None:
 
 
 def test_read_q_bad_row_sums(tmp_path: Path) -> None:
-    """Q rows must sum approximately to one."""
+    """
+    title: Q rows must sum approximately to one.
+    parameters:
+      tmp_path:
+        type: Path
+    """
 
     q_path = tmp_path / "example.Q"
     q_path.write_text("0.8 0.8\n")
@@ -88,7 +115,12 @@ def test_read_q_bad_row_sums(tmp_path: Path) -> None:
 
 
 def test_read_p(tmp_path: Path) -> None:
-    """P files are parsed as numeric matrices with generic SNP columns."""
+    """
+    title: P files are parsed as numeric matrices with generic SNP columns.
+    parameters:
+      tmp_path:
+        type: Path
+    """
 
     p_path = tmp_path / "example.P"
     p_path.write_text("0.1 0.2 0.3\n0.4 0.5 0.6\n")
@@ -100,7 +132,12 @@ def test_read_p(tmp_path: Path) -> None:
 
 
 def test_find_output_files_common_patterns(tmp_path: Path) -> None:
-    """Output discovery supports the wrapper's default file names."""
+    """
+    title: Output discovery supports the wrapper's default file names.
+    parameters:
+      tmp_path:
+        type: Path
+    """
 
     prefix = tmp_path / "example"
     (tmp_path / "example.Q").write_text(Q_TEXT)
@@ -115,7 +152,12 @@ def test_find_output_files_common_patterns(tmp_path: Path) -> None:
 
 
 def test_find_output_files_ambiguous_q(tmp_path: Path) -> None:
-    """Ambiguous Q candidates are rejected."""
+    """
+    title: Ambiguous Q candidates are rejected.
+    parameters:
+      tmp_path:
+        type: Path
+    """
 
     prefix = tmp_path / "example"
     (tmp_path / "example.Q").write_text(Q_TEXT)

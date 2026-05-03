@@ -1,4 +1,6 @@
-"""Python wrapper around OpenADMIXTURE.jl."""
+"""
+title: Python wrapper around OpenADMIXTURE.jl.
+"""
 
 from __future__ import annotations
 

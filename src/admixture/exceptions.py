@@ -1,30 +1,44 @@
-"""Custom exceptions raised by the :mod:`admixture` package."""
+"""
+title: Custom exceptions raised by the :mod:`admixture` package.
+"""
 
 from __future__ import annotations
 
 
 class OpenAdmixtureError(Exception):
-    """Base exception for the admixture package."""
+    """
+    title: Base exception for the admixture package.
+    """
 
 
 class JuliaNotFoundError(OpenAdmixtureError):
-    """Raised when the Julia executable cannot be found."""
+    """
+    title: Raised when the Julia executable cannot be found.
+    """
 
 
 class OpenAdmixtureNotInstalledError(OpenAdmixtureError):
-    """Raised when OpenADMIXTURE.jl is unavailable."""
+    """
+    title: Raised when OpenADMIXTURE.jl is unavailable.
+    """
 
 
 class PlinkInputError(OpenAdmixtureError):
-    """Raised when PLINK input files are missing or invalid."""
+    """
+    title: Raised when PLINK input files are missing or invalid.
+    """
 
 
 class OpenAdmixtureRunError(OpenAdmixtureError):
-    """Raised when the Julia backend exits with a nonzero status."""
+    """
+    title: Raised when the Julia backend exits with a nonzero status.
+    """
 
 
 class OutputParseError(OpenAdmixtureError):
-    """Raised when output files cannot be found or parsed."""
+    """
+    title: Raised when output files cannot be found or parsed.
+    """
 
 
 JULIA_NOT_FOUND_MESSAGE = """Julia executable was not found.

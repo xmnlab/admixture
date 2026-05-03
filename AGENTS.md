@@ -51,6 +51,19 @@ makim docs.preview
 Generated output goes to `docs/_site/` and should not be committed. Keep docs in
 `.qmd` files unless there is a specific reason to add another format.
 
+## Docstrings
+
+Python docstrings use Douki YAML format, with at least a `title` field. Do not
+add NumPy, Google, or plain-text docstrings. Run Douki after editing Python
+docstrings:
+
+```bash
+douki sync src tests
+```
+
+Ruff should not be used for pydocstyle checks in this project; Douki is the
+docstring source of truth.
+
 ## Tests and checks
 
 Unit tests must pass without Julia installed:

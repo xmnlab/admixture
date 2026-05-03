@@ -1,4 +1,6 @@
-"""Tests for PLINK and parameter validation."""
+"""
+title: Tests for PLINK and parameter validation.
+"""
 
 from __future__ import annotations
 
@@ -18,13 +20,26 @@ from admixture.validation import (
 
 
 def _write_plink_trio(prefix: Path, *, empty_suffix: str | None = None) -> None:
+    """
+    title: Write a complete PLINK trio for validation tests.
+    parameters:
+      prefix:
+        type: Path
+      empty_suffix:
+        type: str | None
+    """
     for suffix in ("bed", "bim", "fam"):
         content = b"" if suffix == empty_suffix else b"x"
         (prefix.parent / f"{prefix.name}.{suffix}").write_bytes(content)
 
 
 def test_validate_plink_prefix_accepts_valid_trio(tmp_path: Path) -> None:
-    """A complete non-empty .bed/.bim/.fam trio is accepted."""
+    """
+    title: A complete non-empty .bed/.bim/.fam trio is accepted.
+    parameters:
+      tmp_path:
+        type: Path
+    """
 
     prefix = tmp_path / "example"
     _write_plink_trio(prefix)
@@ -38,7 +53,12 @@ def test_validate_plink_prefix_accepts_valid_trio(tmp_path: Path) -> None:
 
 
 def test_validate_plink_prefix_normalises_bed_suffix(tmp_path: Path) -> None:
-    """Passing example.bed is safely normalized to example."""
+    """
+    title: Passing example.bed is safely normalized to example.
+    parameters:
+      tmp_path:
+        type: Path
+    """
 
     prefix = tmp_path / "example"
     _write_plink_trio(prefix)
@@ -53,7 +73,14 @@ def test_validate_plink_prefix_missing_file(
     tmp_path: Path,
     missing_suffix: str,
 ) -> None:
-    """Each required PLINK file is reported when absent."""
+    """
+    title: Each required PLINK file is reported when absent.
+    parameters:
+      tmp_path:
+        type: Path
+      missing_suffix:
+        type: str
+    """
 
     prefix = tmp_path / "example"
     for suffix in ("bed", "bim", "fam"):
@@ -65,7 +92,12 @@ def test_validate_plink_prefix_missing_file(
 
 
 def test_validate_plink_prefix_empty_file(tmp_path: Path) -> None:
-    """Empty PLINK files are rejected."""
+    """
+    title: Empty PLINK files are rejected.
+    parameters:
+      tmp_path:
+        type: Path
+    """
 
     prefix = tmp_path / "example"
     _write_plink_trio(prefix, empty_suffix="bed")
@@ -75,7 +107,9 @@ def test_validate_plink_prefix_empty_file(tmp_path: Path) -> None:
 
 
 def test_validate_k_accepts_two_or_more() -> None:
-    """K must be at least two."""
+    """
+    title: K must be at least two.
+    """
 
     assert validate_k(2) == 2
     assert validate_k(3) == 3
@@ -83,14 +117,21 @@ def test_validate_k_accepts_two_or_more() -> None:
 
 @pytest.mark.parametrize("bad_k", [1, 0, -1, 2.5, True])
 def test_validate_k_rejects_invalid_values(bad_k: object) -> None:
-    """Invalid K values raise ValueError."""
+    """
+    title: Invalid K values raise ValueError.
+    parameters:
+      bad_k:
+        type: object
+    """
 
     with pytest.raises(ValueError):
         validate_k(cast(int, bad_k))
 
 
 def test_validate_threads() -> None:
-    """Thread count accepts None or positive integers."""
+    """
+    title: Thread count accepts None or positive integers.
+    """
 
     assert validate_threads(None) is None
     assert validate_threads(4) == 4
@@ -101,7 +142,9 @@ def test_validate_threads() -> None:
 
 
 def test_validate_seed() -> None:
-    """Seed accepts None or non-negative integers."""
+    """
+    title: Seed accepts None or non-negative integers.
+    """
 
     assert validate_seed(None) is None
     assert validate_seed(42) == 42
@@ -112,7 +155,12 @@ def test_validate_seed() -> None:
 
 
 def test_ensure_output_parent_creates_directory(tmp_path: Path) -> None:
-    """The output prefix parent directory is created."""
+    """
+    title: The output prefix parent directory is created.
+    parameters:
+      tmp_path:
+        type: Path
+    """
 
     output = ensure_output_parent(tmp_path / "with spaces" / "example_k2")
 

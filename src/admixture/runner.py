@@ -1,4 +1,6 @@
-"""High-level runner for invoking OpenADMIXTURE.jl from Python."""
+"""
+title: High-level runner for invoking OpenADMIXTURE.jl from Python.
+"""
 
 from __future__ import annotations
 
@@ -39,6 +41,14 @@ _EXTRA_ARG_RE = re.compile(r"^[A-Za-z][A-Za-z0-9_-]*$")
 
 
 def _subprocess_output_to_text(output: str | bytes | None) -> str:
+    """
+    title: Normalize subprocess output to text.
+    parameters:
+      output:
+        type: str | bytes | None
+    returns:
+      type: str
+    """
     if output is None:
         return ""
     if isinstance(output, bytes):
@@ -47,7 +57,20 @@ def _subprocess_output_to_text(output: str | bytes | None) -> str:
 
 
 class OpenAdmixtureRunner:
-    """Run OpenADMIXTURE.jl on binary PLINK input data."""
+    """
+    title: Run OpenADMIXTURE.jl on binary PLINK input data.
+    attributes:
+      julia:
+        description: Julia executable name or path.
+      project_dir:
+        description: Optional Julia project directory.
+      install_if_missing:
+        description: Whether to bootstrap OpenADMIXTURE.jl when missing.
+      timeout:
+        description: Optional subprocess timeout in seconds.
+      _resolved_julia:
+        type: Path | None
+    """
 
     def __init__(
         self,
@@ -56,19 +79,17 @@ class OpenAdmixtureRunner:
         install_if_missing: bool = False,
         timeout: float | None = None,
     ) -> None:
-        """Create a runner.
-
-        Parameters
-        ----------
-        julia
-            Julia executable name or explicit executable path.
-        project_dir
-            Optional Julia project directory passed as ``--project=...``.
-        install_if_missing
-            If ``True``, install OpenADMIXTURE.jl into ``project_dir`` when it
-            is missing. A project directory is required for this opt-in action.
-        timeout
-            Optional subprocess timeout in seconds for the OpenADMIXTURE run.
+        """
+        title: Create a runner.
+        parameters:
+          julia:
+            type: str | Path
+          project_dir:
+            type: str | Path | None
+          install_if_missing:
+            type: bool
+          timeout:
+            type: float | None
         """
         self.julia = julia
         self.project_dir = Path(project_dir).expanduser() if project_dir else None
@@ -77,23 +98,40 @@ class OpenAdmixtureRunner:
         self._resolved_julia: Path | None = None
 
     def _julia_for_command(self) -> str:
+        """
+        title: Return the Julia executable string for a subprocess command.
+        returns:
+          type: str
+        """
         if self._resolved_julia is not None:
             return str(self._resolved_julia)
         return str(self.julia)
 
     def check_julia(self) -> JuliaInfo:
-        """Find Julia and return its executable path and version."""
+        """
+        title: Find Julia and return its executable path and version.
+        returns:
+          type: JuliaInfo
+        """
         executable = find_julia(self.julia)
         self._resolved_julia = executable
         return JuliaInfo(executable=executable, version=get_julia_version(executable))
 
     def check_openadmixture(self) -> bool:
-        """Return whether OpenADMIXTURE.jl imports successfully."""
+        """
+        title: Return whether OpenADMIXTURE.jl imports successfully.
+        returns:
+          type: bool
+        """
         julia = self._resolved_julia if self._resolved_julia else self.julia
         return check_openadmixture_installed(julia, self.project_dir)
 
     def version_info(self) -> dict[str, Any]:
-        """Return Python, Julia and OpenADMIXTURE version metadata."""
+        """
+        title: Return Python, Julia and OpenADMIXTURE version metadata.
+        returns:
+          type: dict[str, Any]
+        """
         julia_info = self.check_julia()
         openadmixture_installed = self.check_openadmixture()
         openadmixture_version = None
@@ -123,7 +161,24 @@ class OpenAdmixtureRunner:
         threads: int | None,
         extra_args: Mapping[str, str | int | float] | None = None,
     ) -> tuple[str, ...]:
-        """Build the Julia subprocess command as a tuple of arguments."""
+        """
+        title: Build the Julia subprocess command as a tuple of arguments.
+        parameters:
+          bfile:
+            type: Path
+          k:
+            type: int
+          out_prefix:
+            type: Path
+          seed:
+            type: int | None
+          threads:
+            type: int | None
+          extra_args:
+            type: Mapping[str, str | int | float] | None
+        returns:
+          type: tuple[str, Ellipsis]
+        """
         script = files("admixture").joinpath("julia/run_openadmixture.jl")
         command: list[str] = [self._julia_for_command()]
         if self.project_dir is not None:
@@ -156,6 +211,9 @@ class OpenAdmixtureRunner:
         return tuple(command)
 
     def _ensure_openadmixture_available(self) -> None:
+        """
+        title: Ensure OpenADMIXTURE.jl can be imported before running.
+        """
         if self.check_openadmixture():
             return
         if self.install_if_missing:
@@ -180,7 +238,24 @@ class OpenAdmixtureRunner:
         threads: int | None = None,
         extra_args: Mapping[str, str | int | float] | None = None,
     ) -> OpenAdmixtureResult:
-        """Run OpenADMIXTURE.jl and parse the output files."""
+        """
+        title: Run OpenADMIXTURE.jl and parse the output files.
+        parameters:
+          bfile:
+            type: str | Path
+          k:
+            type: int
+          out_prefix:
+            type: str | Path
+          seed:
+            type: int | None
+          threads:
+            type: int | None
+          extra_args:
+            type: Mapping[str, str | int | float] | None
+        returns:
+          type: OpenAdmixtureResult
+        """
         plink_files = validate_plink_prefix(bfile)
         validated_k = validate_k(k)
         validated_seed = validate_seed(seed)
@@ -274,7 +349,32 @@ def run_openadmixture(
     threads: int | None = None,
     extra_args: Mapping[str, str | int | float] | None = None,
 ) -> OpenAdmixtureResult:
-    """Run OpenADMIXTURE.jl once with a temporary runner."""
+    """
+    title: Run OpenADMIXTURE.jl once with a temporary runner.
+    parameters:
+      bfile:
+        type: str | Path
+      k:
+        type: int
+      out_prefix:
+        type: str | Path
+      julia:
+        type: str | Path
+      project_dir:
+        type: str | Path | None
+      install_if_missing:
+        type: bool
+      timeout:
+        type: float | None
+      seed:
+        type: int | None
+      threads:
+        type: int | None
+      extra_args:
+        type: Mapping[str, str | int | float] | None
+    returns:
+      type: OpenAdmixtureResult
+    """
     runner = OpenAdmixtureRunner(
         julia=julia,
         project_dir=project_dir,

@@ -1,4 +1,6 @@
-"""Parsers for PLINK metadata and OpenADMIXTURE output files."""
+"""
+title: Parsers for PLINK metadata and OpenADMIXTURE output files.
+"""
 
 from __future__ import annotations
 
@@ -23,7 +25,16 @@ FAM_COLUMNS = [
 
 @dataclass(frozen=True)
 class OutputFiles:
-    """OpenADMIXTURE output files discovered for a run."""
+    """
+    title: OpenADMIXTURE output files discovered for a run.
+    attributes:
+      q:
+        type: Path
+      p:
+        type: Path | None
+      log:
+        type: Path | None
+    """
 
     q: Path
     p: Path | None
@@ -31,7 +42,14 @@ class OutputFiles:
 
 
 def read_fam(path: str | Path) -> pd.DataFrame:
-    """Read a standard six-column PLINK ``.fam`` file."""
+    """
+    title: Read a standard six-column PLINK ``.fam`` file.
+    parameters:
+      path:
+        type: str | Path
+    returns:
+      type: pd.DataFrame
+    """
     fam_path = Path(path)
     try:
         fam = pd.read_csv(fam_path, sep=r"\s+", header=None, dtype=str)
@@ -52,6 +70,16 @@ def read_fam(path: str | Path) -> pd.DataFrame:
 
 
 def _read_numeric_matrix(path: str | Path, *, label: str) -> pd.DataFrame:
+    """
+    title: Read and validate a whitespace-delimited numeric matrix.
+    parameters:
+      path:
+        type: str | Path
+      label:
+        type: str
+    returns:
+      type: pd.DataFrame
+    """
     matrix_path = Path(path)
     try:
         data = pd.read_csv(
@@ -87,11 +115,21 @@ def read_q(
     *,
     row_sum_tolerance: float = 1e-3,
 ) -> pd.DataFrame:
-    """Read an ancestry-proportion ``.Q`` matrix.
-
-    Rows are individuals and columns are named ``ancestry_1``,
-    ``ancestry_2``, ... . When ``fam_path`` is provided, the index is set to
-    the PLINK individual IDs from the matching ``.fam`` file.
+    """
+    title: Read an ancestry-proportion ``.Q`` matrix.
+    summary: |-
+      Rows are individuals and columns are named ``ancestry_1``,
+      ``ancestry_2``, ... . When ``fam_path`` is provided, the index is set to
+      the PLINK individual IDs from the matching ``.fam`` file.
+    parameters:
+      path:
+        type: str | Path
+      fam_path:
+        type: str | Path | None
+      row_sum_tolerance:
+        type: float
+    returns:
+      type: pd.DataFrame
     """
     q = _read_numeric_matrix(path, label="Q")
     q.columns = [f"ancestry_{index}" for index in range(1, q.shape[1] + 1)]
@@ -120,13 +158,32 @@ def read_q(
 
 
 def read_p(path: str | Path) -> pd.DataFrame:
-    """Read an allele-frequency ``.P`` matrix."""
+    """
+    title: Read an allele-frequency ``.P`` matrix.
+    parameters:
+      path:
+        type: str | Path
+    returns:
+      type: pd.DataFrame
+    """
     p = _read_numeric_matrix(path, label="P")
     p.columns = [f"snp_{index}" for index in range(1, p.shape[1] + 1)]
     return p
 
 
 def _candidate_paths(out_prefix: Path, k: int, extension: str) -> list[Path]:
+    """
+    title: Build candidate output paths for an OpenADMIXTURE artifact.
+    parameters:
+      out_prefix:
+        type: Path
+      k:
+        type: int
+      extension:
+        type: str
+    returns:
+      type: list[Path]
+    """
     prefix = str(out_prefix)
     return [
         Path(f"{prefix}.{extension}"),
@@ -139,6 +196,16 @@ def _candidate_paths(out_prefix: Path, k: int, extension: str) -> list[Path]:
 
 
 def _existing_unique(candidates: Iterable[Path], *, label: str) -> list[Path]:
+    """
+    title: Return existing candidates while rejecting ambiguous matches.
+    parameters:
+      candidates:
+        type: Iterable[Path]
+      label:
+        type: str
+    returns:
+      type: list[Path]
+    """
     seen: set[Path] = set()
     existing: list[Path] = []
     for candidate in candidates:
@@ -157,7 +224,16 @@ def _existing_unique(candidates: Iterable[Path], *, label: str) -> list[Path]:
 
 
 def find_output_files(out_prefix: str | Path, k: int) -> OutputFiles:
-    """Find Q, P and log outputs for an OpenADMIXTURE run."""
+    """
+    title: Find Q, P and log outputs for an OpenADMIXTURE run.
+    parameters:
+      out_prefix:
+        type: str | Path
+      k:
+        type: int
+    returns:
+      type: OutputFiles
+    """
     prefix = Path(out_prefix)
     q_candidates = _candidate_paths(prefix, k, "Q")
     p_candidates = _candidate_paths(prefix, k, "P")
