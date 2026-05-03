@@ -246,6 +246,10 @@ The runtime test requires all of:
 - OpenADMIXTURE.jl installed;
 - `ADMIXTURE_TEST_PLINK_PREFIX` set to a real PLINK prefix.
 
+The malariagen-data runtime test is development-only. It skips on Python 3.13+
+and imports `malariagen_data` inside the test only, so the package does not gain
+a production dependency on malariagen-data.
+
 Run tests with:
 
 ```bash

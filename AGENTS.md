@@ -76,6 +76,11 @@ The OpenADMIXTURE runtime test requires Julia, OpenADMIXTURE.jl, and a real
 binary PLINK prefix via `ADMIXTURE_TEST_PLINK_PREFIX`; it skips itself when the
 local runtime/data prerequisites are not configured.
 
+Tests may use `malariagen-data` as a development-only dependency. Do not import
+`malariagen_data` from `src/`; keep it test-only to avoid a future circular
+dependency if `malariagen-data` depends on `admixture`. Tests that import
+`malariagen_data` must skip on Python 3.13+.
+
 Common checks:
 
 ```bash
