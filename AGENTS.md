@@ -30,13 +30,22 @@ This project intentionally uses conda and Poetry together. Conda supplies the
 base development environment and external tools such as Quarto. Poetry manages
 Python packaging and Python dependencies.
 
+## Dependency management
+
+Keep production dependencies in `[tool.poetry.dependencies]`. Keep development
+dependencies in `[tool.poetry.group.dev.dependencies]`, mirroring them in
+`[project.optional-dependencies].dev` so `pip install -e ".[dev]"` continues
+to work. Do not remove or rewrite dependency entries unless the task explicitly
+requires it. When dependencies change, update `poetry.lock` and run
+`poetry check --lock`.
+
 ## Documentation
 
 Documentation lives in `docs/` and uses Quarto.
 
 ```bash
-quarto render docs
-quarto preview docs
+makim docs.build
+makim docs.preview
 ```
 
 Generated output goes to `docs/_site/` and should not be committed. Keep docs in
@@ -47,7 +56,7 @@ Generated output goes to `docs/_site/` and should not be committed. Keep docs in
 Unit tests must pass without Julia installed:
 
 ```bash
-pytest -m "not integration"
+makim tests.unit
 ```
 
 Optional integration tests require Julia, OpenADMIXTURE.jl, and a real binary
@@ -56,9 +65,8 @@ PLINK prefix via `ADMIXTURE_TEST_PLINK_PREFIX`.
 Common checks:
 
 ```bash
-ruff check src tests
-mypy src/admixture
-poetry check --lock
+makim lint.all
+makim package.build
 ```
 
 ## Implementation constraints

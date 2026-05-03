@@ -6,13 +6,13 @@ Render locally:
 
 ```bash
 conda activate admixture
-quarto render docs
+makim docs.build
 ```
 
 Preview locally:
 
 ```bash
-quarto preview docs
+makim docs.preview
 ```
 
 Generated output is written to `docs/_site/` and should not be committed.

@@ -1,10 +1,13 @@
-name: tests
+name: main
 
 on:
   push:
     branches: [main]
   pull_request:
     branches: [main]
+
+env:
+  VIRTUALENV_ACTIVATORS: "bash,python"
 
 jobs:
   unit:
@@ -31,13 +34,13 @@ jobs:
           conda-solver: libmamba
           python-version: ${{ matrix.python-version }}
 
-      - name: Install with Poetry
+      - name: Install dependencies
         run: |
           poetry config virtualenvs.create false
           poetry install --with dev
 
       - name: Run unit tests
-        run: pytest -m "not integration"
+        run: makim --verbose tests.unit
 
   lint:
     name: Lint and type check
@@ -58,16 +61,10 @@ jobs:
           conda-solver: libmamba
           python-version: "3.12"
 
-      - name: Install with Poetry
+      - name: Install dependencies
         run: |
           poetry config virtualenvs.create false
           poetry install --with dev
 
-      - name: Poetry check
-        run: poetry check
-
-      - name: Ruff
-        run: ruff check src tests
-
-      - name: Mypy
-        run: mypy src/admixture
+      - name: Run lint and type checks
+        run: makim --verbose lint.all

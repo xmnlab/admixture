@@ -7,19 +7,28 @@ authors = [
   {name = "Ivan Ogasawara", email = "ivan.ogasawara@gmail.com"}
 ]
 license = "BSD-3-Clause"
-requires-python = ">=3.10"
-dependencies = [
-  "numpy",
-  "pandas",
-  "packaging",
-]
+requires-python = ">=3.10,<4"
+dynamic = ["dependencies"]
 
 [project.optional-dependencies]
 dev = [
-  "pytest",
-  "pytest-cov",
-  "ruff",
-  "mypy",
+  "pytest>=7.3.2",
+  "pytest-cov>=4.1.0",
+  "pytest-xdist>=3.8.0",
+  "coverage>=7.2.7",
+  "pre-commit>=3.3.2",
+  "ruff>=0.9.5",
+  "mypy>=1.6.0",
+  "bandit>=1.7.5",
+  "vulture>=2.9.1",
+  "mccabe>=0.6.1",
+  "ipykernel>=6.0.0",
+  "ipython>=7.0.0",
+  "quarto-cli>=1.9.0",
+  "jupyterlab>=4.0.7",
+  "makim==1.27.0",
+  "nbmake>=1.5.3",
+  "douki>=0.12.1",
 ]
 
 [build-system]
@@ -39,11 +48,30 @@ include = [
   "src/admixture/julia/*.jl",
 ]
 
+[tool.poetry.dependencies]
+numpy = ">=1.26"
+pandas = ">=2.0"
+packaging = ">=23"
+
 [tool.poetry.group.dev.dependencies]
 pytest = ">=7.3.2"
 pytest-cov = ">=4.1.0"
-ruff = ">=0.1.5"
-mypy = ">=1.5.0"
+pytest-xdist = ">=3.8.0"
+coverage = ">=7.2.7"
+pre-commit = ">=3.3.2"
+ruff = ">=0.9.5"
+mypy = ">=1.6.0"
+bandit = ">=1.7.5"
+vulture = ">=2.9.1"
+mccabe = ">=0.6.1"
+ipykernel = ">=6.0.0"
+ipython = ">=7.0.0"
+quarto-cli = ">=1.9.0"
+jupyterlab = ">=4.0.7"
+makim = "1.27.0"
+nbmake = ">=1.5.3"
+douki = ">=0.12.1"
+
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

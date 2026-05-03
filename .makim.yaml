@@ -1,0 +1,134 @@
+groups:
+  default:
+    tasks:
+      clean:
+        help: remove build artifacts, rendered docs, compiled files, and caches
+        run: |
+          rm -rf build/
+          rm -rf dist/
+          rm -rf docs/_site/
+          rm -rf docs/.quarto/
+          rm -rf .quarto-tmp/
+          rm -rf .quarto-cache/
+          rm -rf .quarto-home/
+          rm -rf .deno-cache/
+          rm -rf .eggs/
+          find . -name '*.egg-info' -exec rm -rf {} +
+          find . -name '*.egg' -exec rm -f {} +
+          find . -name '*.pyc' -exec rm -f {} +
+          find . -name '__pycache__' -exec rm -rf {} +
+          find . -name '*.pyo' -exec rm -f {} +
+          find . -name '*~' -exec rm -f {} +
+          rm -f .coverage
+          rm -rf htmlcov/
+          rm -rf .pytest_cache/
+          rm -rf .mypy_cache/
+          rm -rf .ruff_cache/
+          rm -rf pytest-of-*/
+
+  tests:
+    tasks:
+      unit:
+        help: run unit tests that do not require Julia/OpenADMIXTURE.jl
+        args:
+          path:
+            help: test path to run
+            type: string
+            default: tests
+          params:
+            help: extra pytest parameters
+            type: string
+            default: '-m "not integration"'
+        run: pytest ${{ args.path }} ${{ args.params }}
+
+      integration:
+        help: run optional Julia/OpenADMIXTURE.jl integration tests
+        args:
+          path:
+            help: test path to run
+            type: string
+            default: tests
+          params:
+            help: extra pytest parameters
+            type: string
+            default: "-m integration"
+        run: pytest ${{ args.path }} ${{ args.params }}
+
+      all:
+        help: run all tests, including integration tests when configured
+        run: pytest tests
+
+      ci:
+        help: run CI test suite that must pass without Julia installed
+        hooks:
+          pre-run:
+            - task: tests.unit
+
+  lint:
+    tasks:
+      poetry:
+        help: validate pyproject.toml and poetry.lock
+        run: poetry check --lock
+
+      ruff:
+        help: run Ruff checks
+        run: ruff check src tests
+
+      typecheck:
+        help: run mypy type checks
+        run: mypy src/admixture
+
+      all:
+        help: run all lint and type checks
+        hooks:
+          pre-run:
+            - task: lint.poetry
+            - task: lint.ruff
+            - task: lint.typecheck
+
+  docs:
+    tasks:
+      build:
+        help: render the Quarto documentation site into build/
+        run: |
+          mkdir -p .quarto-tmp .quarto-cache .quarto-home .deno-cache
+          rm -rf docs/_site build
+          TMPDIR="$PWD/.quarto-tmp" \
+          XDG_CACHE_HOME="$PWD/.quarto-cache" \
+          DENO_DIR="$PWD/.deno-cache" \
+          HOME="$PWD/.quarto-home" \
+            quarto render docs
+          cp -a docs/_site build
+
+      preview:
+        help: preview the Quarto documentation site locally
+        run: |
+          mkdir -p .quarto-tmp .quarto-cache .quarto-home .deno-cache
+          TMPDIR="$PWD/.quarto-tmp" \
+          XDG_CACHE_HOME="$PWD/.quarto-cache" \
+          DENO_DIR="$PWD/.deno-cache" \
+          HOME="$PWD/.quarto-home" \
+            quarto preview docs
+
+  package:
+    tasks:
+      build:
+        help: build source and wheel distributions
+        run: poetry build
+
+      check:
+        help: run package metadata and wheel build checks
+        hooks:
+          pre-run:
+            - task: lint.poetry
+            - task: package.build
+
+  all:
+    tasks:
+      ci:
+        help: run the local CI checks
+        hooks:
+          pre-run:
+            - task: tests.ci
+            - task: lint.all
+            - task: package.check

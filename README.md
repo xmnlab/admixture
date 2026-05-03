@@ -48,15 +48,22 @@ pip install -e ".[dev]"
 Documentation lives in `docs/` and uses Quarto. The conda environment includes
 the Quarto CLI.
 
-Render the site with:
+Render the site with Makim:
 
 ```bash
-quarto render docs
+makim docs.build
 ```
 
 Preview while editing with:
 
 ```bash
+makim docs.preview
+```
+
+Direct Quarto commands also work when your temp/cache directories are writable:
+
+```bash
+quarto render docs
 quarto preview docs
 ```
 
@@ -242,6 +249,8 @@ Pure Python tests do not require Julia. The integration test requires all of:
 Run unit tests only with:
 
 ```bash
+makim tests.unit
+# or directly:
 pytest -m "not integration"
 ```
 

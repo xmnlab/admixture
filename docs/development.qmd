@@ -16,13 +16,13 @@ This project uses a `src/` package layout and Python 3.10+.
 Run unit tests that do not require Julia:
 
 ```bash
-pytest -m "not integration"
+makim tests.unit
 ```
 
 Run all tests:
 
 ```bash
-pytest
+makim tests.all
 ```
 
 The integration test is skipped unless `ADMIXTURE_TEST_PLINK_PREFIX` points to a
@@ -32,8 +32,7 @@ environment.
 ## Lint and type checks
 
 ```bash
-ruff check src tests
-mypy src/admixture
+makim lint.all
 ```
 
 ## Documentation
@@ -41,13 +40,13 @@ mypy src/admixture
 Render the Quarto website:
 
 ```bash
-quarto render docs
+makim docs.build
 ```
 
 Preview while editing:
 
 ```bash
-quarto preview docs
+makim docs.preview
 ```
 
 Generated site files are written to `docs/_site/` and should not be committed.
