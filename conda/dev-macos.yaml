@@ -1,0 +1,11 @@
+name: admixture
+channels:
+  - nodefaults
+  - conda-forge
+dependencies:
+  - python 3.12.*
+  - pip
+  - julia
+  - poetry
+  - nodejs
+  - google-cloud-sdk

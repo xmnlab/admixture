@@ -22,9 +22,13 @@ The wrapper is responsible for:
 The conda environment name is `admixture`.
 
 ```bash
+conda env create -f conda/dev-linux.yaml
 conda activate admixture
 makim setup.install
 ```
+
+Use `conda/dev-linux.yaml`, `conda/dev-macos.yaml`, or `conda/dev-win.yaml`
+depending on the operating system.
 
 This project intentionally uses conda and Poetry together. Conda supplies the
 base development environment and external tools such as Quarto. Poetry manages

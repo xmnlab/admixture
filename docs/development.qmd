@@ -5,11 +5,14 @@ title: "Development"
 ## Environment
 
 ```bash
+conda env create -f conda/dev-linux.yaml
 conda activate admixture
 makim setup.install
 ```
 
-This project uses a `src/` package layout and Python 3.10+.
+Use `conda/dev-linux.yaml`, `conda/dev-macos.yaml`, or `conda/dev-win.yaml`
+depending on your operating system. This project uses a `src/` package layout
+and Python 3.10+.
 
 ## Tests
 

@@ -19,11 +19,17 @@ This repository uses **conda and Poetry together**. The conda environment is
 named `admixture`.
 
 ```bash
-conda env create -f conda.yaml
+conda env create -f conda/dev-linux.yaml
 conda activate admixture
 poetry config virtualenvs.create false
 makim setup.install
 ```
+
+Use the environment file for your operating system:
+
+- Linux: `conda/dev-linux.yaml`
+- macOS: `conda/dev-macos.yaml`
+- Windows: `conda/dev-win.yaml`
 
 `makim setup.install` runs `poetry install --with dev` and then instantiates
 the packaged Julia project.
@@ -32,14 +38,14 @@ If the environment already exists:
 
 ```bash
 conda activate admixture
-conda env update -f conda.yaml --prune
+conda env update -f conda/dev-linux.yaml --prune
 makim setup.install
 ```
 
 ## Quarto documentation engine
 
-The documentation in `docs/` is a Quarto website. The conda environment includes
-the Quarto CLI when created from `conda.yaml`.
+The documentation in `docs/` is a Quarto website. The conda environments include
+the Quarto CLI.
 
 Render locally with:
 
@@ -71,6 +77,28 @@ You can also pass an explicit executable path:
 from admixture import OpenAdmixtureRunner
 
 runner = OpenAdmixtureRunner(julia="/path/to/julia")
+```
+
+## Google Cloud CLI
+
+The Linux and macOS conda environment files include `google-cloud-sdk`, which
+provides the `gcloud` command used for local malariagen-data authentication:
+
+```bash
+makim gcloud.auth
+```
+
+The Windows conda environment file does not include `google-cloud-sdk`. On
+Windows, install Google Cloud CLI with Google's official installer, open a new
+terminal, and then authenticate:
+
+```powershell
+(New-Object Net.WebClient).DownloadFile(
+  "https://dl.google.com/dl/cloudsdk/channels/rapid/GoogleCloudSDKInstaller.exe",
+  "$env:Temp\GoogleCloudSDKInstaller.exe"
+)
+& "$env:Temp\GoogleCloudSDKInstaller.exe"
+gcloud auth application-default login
 ```
 
 On Windows:

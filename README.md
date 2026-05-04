@@ -42,11 +42,17 @@ This repository uses **conda and Poetry together**. Conda provides the base
 Python environment and common compiled packages; Poetry installs the project.
 
 ```bash
-conda env create -f conda.yaml
+conda env create -f conda/dev-linux.yaml
 conda activate admixture
 poetry config virtualenvs.create false
 makim setup.install
 ```
+
+Use the environment file for your operating system:
+
+- Linux: `conda/dev-linux.yaml`
+- macOS: `conda/dev-macos.yaml`
+- Windows: `conda/dev-win.yaml`
 
 `makim setup.install` runs `poetry install --with dev` and then instantiates the
 packaged Julia project.
@@ -200,7 +206,7 @@ passed safely as single arguments.
 PowerShell example:
 
 ```powershell
-conda env create -f conda.yaml
+conda env create -f conda/dev-win.yaml
 conda activate admixture
 poetry config virtualenvs.create false
 poetry install --with dev
@@ -213,6 +219,19 @@ If Julia is not on `PATH`, pass the executable explicitly:
 runner = OpenAdmixtureRunner(
     julia=r"C:\Users\you\AppData\Local\Programs\Julia-1.11.0\bin\julia.exe"
 )
+```
+
+The Windows conda environment does not include the Google Cloud CLI. To run
+malariagen-data runtime tests on Windows, install Google Cloud CLI with the
+official Windows installer, open a new terminal, and then authenticate:
+
+```powershell
+(New-Object Net.WebClient).DownloadFile(
+  "https://dl.google.com/dl/cloudsdk/channels/rapid/GoogleCloudSDKInstaller.exe",
+  "$env:Temp\GoogleCloudSDKInstaller.exe"
+)
+& "$env:Temp\GoogleCloudSDKInstaller.exe"
+gcloud auth application-default login
 ```
 
 Paths with spaces are passed as separate subprocess arguments, not through a
