@@ -6,7 +6,7 @@ title: "Development"
 
 ```bash
 conda activate admixture
-poetry install --with dev
+makim setup.install
 ```
 
 This project uses a `src/` package layout and Python 3.10+.
@@ -19,7 +19,7 @@ Run the test suite:
 makim tests.unit
 ```
 
-Install OpenADMIXTURE.jl into the default project-local Julia environment:
+Instantiate only the packaged OpenADMIXTURE.jl Julia project:
 
 ```bash
 makim setup.julia

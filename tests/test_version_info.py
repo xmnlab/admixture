@@ -23,7 +23,11 @@ def test_version_info(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
         type: Path
     """
 
-    runner = OpenAdmixtureRunner(project_dir=tmp_path / "julia_env")
+    monkeypatch.setattr(
+        "admixture.runner.default_julia_project_dir",
+        lambda: tmp_path / "julia_env",
+    )
+    runner = OpenAdmixtureRunner()
     monkeypatch.setattr(
         runner,
         "check_julia",

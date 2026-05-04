@@ -10,6 +10,7 @@ The top-level package exports:
 from admixture import (
     OpenAdmixtureRunner,
     OpenAdmixtureResult,
+    default_julia_project_dir,
     run_openadmixture,
     setup,
 )
@@ -20,7 +21,6 @@ from admixture import (
 ```python
 OpenAdmixtureRunner(
     julia="julia",
-    project_dir=None,
     install_if_missing=False,
     timeout=None,
 )
@@ -29,9 +29,8 @@ OpenAdmixtureRunner(
 Parameters:
 
 - `julia`: executable name or explicit executable path.
-- `project_dir`: optional Julia project passed as `--project=<project_dir>`.
-- `install_if_missing`: if `True`, bootstrap OpenADMIXTURE.jl into
-  `project_dir` when missing. This is opt-in and requires `project_dir`.
+- `install_if_missing`: if `True`, instantiate the packaged Julia project when
+  OpenADMIXTURE.jl cannot be imported.
 - `timeout`: optional subprocess timeout in seconds.
 
 Useful methods:
@@ -50,7 +49,6 @@ run_openadmixture(
     k,
     out_prefix,
     julia="julia",
-    project_dir=None,
     install_if_missing=False,
     timeout=None,
     seed=None,
@@ -66,17 +64,17 @@ Creates an `OpenAdmixtureRunner` and runs it once.
 ```python
 import admixture
 
-admixture.setup(project_dir="julia_env", julia="julia")
+project_dir = admixture.setup(julia="julia")
 ```
 
-Installs OpenADMIXTURE.jl into an explicit Julia project. `project_dir` is
-required so package installation never mutates the global Julia environment by
-default.
+Installs OpenADMIXTURE.jl into a Julia project and returns the project path.
+The path is the packaged Julia project returned by
+`admixture.default_julia_project_dir()`.
 
 Equivalent installed command:
 
 ```bash
-admixture-setup --project-dir julia_env --julia julia
+admixture-setup --julia julia
 ```
 
 ## `OpenAdmixtureResult`

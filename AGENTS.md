@@ -23,7 +23,7 @@ The conda environment name is `admixture`.
 
 ```bash
 conda activate admixture
-poetry install --with dev
+makim setup.install
 ```
 
 This project intentionally uses conda and Poetry together. Conda supplies the
@@ -92,8 +92,8 @@ makim package.build
 - Do not vendor OpenADMIXTURE.jl source code.
 - Do not add GPL or closed-source ADMIXTURE as a dependency.
 - Do not run network-installing Julia bootstrap code during import,
-  post-install, or tests. Use explicit `admixture.setup(project_dir=...)` for
-  opt-in Julia project setup, or the installed `admixture-setup` command.
+  post-install, or tests. Use explicit `admixture.setup()` or the installed
+  `admixture-setup` command to instantiate the packaged Julia project.
 - Use `pathlib.Path` for paths.
 - Use `subprocess.run([...], shell=False, capture_output=True, text=True)`.
 - Never build shell command strings for Julia execution.

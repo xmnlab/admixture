@@ -34,6 +34,7 @@ packages = [
 include = [
   "src/admixture/py.typed",
   "src/admixture/julia/*.jl",
+  "src/admixture/julia-env/*.toml",
 ]
 
 [tool.poetry.group.dev.dependencies]

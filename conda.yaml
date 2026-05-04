@@ -1,18 +1,10 @@
 name: admixture
 channels:
+  - nodefaults
   - conda-forge
 dependencies:
   - python 3.12.*
   - pip
   - julia
   - poetry
-  - numpy
-  - pandas
-  - packaging
-  - pytest
-  - pytest-cov
-  - ruff
-  - mypy
-  - quarto
-  - pip:
-      - -e .[dev]
+  - nodejs

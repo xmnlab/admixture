@@ -38,11 +38,10 @@ def _openadmixture_runner() -> OpenAdmixtureRunner:
     returns:
       type: OpenAdmixtureRunner
     """
-    project_dir = os.environ.get("ADMIXTURE_TEST_JULIA_PROJECT")
-    runner = OpenAdmixtureRunner(project_dir=project_dir)
+    runner = OpenAdmixtureRunner()
     assert runner.check_openadmixture(), (
         "OpenADMIXTURE.jl is required for runtime tests. Install it in the "
-        "active Julia environment or set ADMIXTURE_TEST_JULIA_PROJECT."
+        "packaged Julia project by running `admixture-setup`."
     )
     return runner
 

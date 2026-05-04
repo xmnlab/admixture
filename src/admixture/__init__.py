@@ -15,7 +15,7 @@ from .exceptions import (
 )
 from .result import OpenAdmixtureResult
 from .runner import OpenAdmixtureRunner, run_openadmixture
-from .setup import setup
+from .setup import default_julia_project_dir, setup
 
 __all__ = [
     "JuliaNotFoundError",
@@ -27,6 +27,7 @@ __all__ = [
     "OutputParseError",
     "PlinkInputError",
     "__version__",
+    "default_julia_project_dir",
     "run_openadmixture",
     "setup",
 ]

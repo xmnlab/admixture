@@ -14,28 +14,10 @@ runner = OpenAdmixtureRunner(julia="/path/to/julia")
 
 ## OpenADMIXTURE.jl is not installed
 
-Install the upstream package in the Julia environment you plan to use:
+Instantiate the packaged Julia project:
 
 ```bash
-julia -e 'using Pkg; Pkg.add(url="https://github.com/kose-y/SparseKmeansFeatureRanking.jl"); Pkg.add(url="https://github.com/OpenMendel/OpenADMIXTURE.jl")'
-```
-
-If using a project-local Julia environment, pass the same directory as
-`project_dir`.
-
-You can also bootstrap a project-local Julia environment explicitly from
-the installed command:
-
-```bash
-admixture-setup --project-dir julia_env
-```
-
-Or from Python:
-
-```python
-import admixture
-
-admixture.setup(project_dir="julia_env")
+admixture-setup
 ```
 
 ## PLINK files are missing or empty
@@ -80,6 +62,5 @@ either is unavailable:
 pytest tests
 ```
 
-Optionally set `ADMIXTURE_TEST_JULIA_PROJECT` when OpenADMIXTURE.jl is installed
-in a project-local Julia environment. The malariagen-data-backed runtime test
-skips only on Python 3.13+ because malariagen-data is unavailable there.
+The malariagen-data-backed runtime test skips only on Python 3.13+ because
+malariagen-data is unavailable there.

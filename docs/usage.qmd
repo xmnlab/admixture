@@ -29,7 +29,6 @@ from admixture import OpenAdmixtureRunner
 
 runner = OpenAdmixtureRunner(
     julia="julia",
-    project_dir="julia_env",
     install_if_missing=False,
     timeout=None,
 )
@@ -55,7 +54,6 @@ result = run_openadmixture(
     bfile="data/example",
     k=3,
     out_prefix="results/example_k3",
-    project_dir="julia_env",
     seed=42,
     threads=4,
 )

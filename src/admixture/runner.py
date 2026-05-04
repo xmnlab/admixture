@@ -21,7 +21,6 @@ from .exceptions import (
 )
 from .julia_env import (
     JuliaInfo,
-    bootstrap_julia_project,
     check_openadmixture_installed,
     find_julia,
     get_julia_version,
@@ -29,6 +28,7 @@ from .julia_env import (
 )
 from .parsing import find_output_files, read_p, read_q
 from .result import OpenAdmixtureResult
+from .setup import default_julia_project_dir, setup
 from .validation import (
     ensure_output_parent,
     validate_k,
@@ -63,9 +63,9 @@ class OpenAdmixtureRunner:
       julia:
         description: Julia executable name or path.
       project_dir:
-        description: Optional Julia project directory.
+        description: Packaged Julia project directory.
       install_if_missing:
-        description: Whether to bootstrap OpenADMIXTURE.jl when missing.
+        description: Whether to instantiate Julia dependencies when missing.
       timeout:
         description: Optional subprocess timeout in seconds.
       _resolved_julia:
@@ -75,7 +75,6 @@ class OpenAdmixtureRunner:
     def __init__(
         self,
         julia: str | Path = "julia",
-        project_dir: str | Path | None = None,
         install_if_missing: bool = False,
         timeout: float | None = None,
     ) -> None:
@@ -84,15 +83,13 @@ class OpenAdmixtureRunner:
         parameters:
           julia:
             type: str | Path
-          project_dir:
-            type: str | Path | None
           install_if_missing:
             type: bool
           timeout:
             type: float | None
         """
         self.julia = julia
-        self.project_dir = Path(project_dir).expanduser() if project_dir else None
+        self.project_dir = default_julia_project_dir()
         self.install_if_missing = install_if_missing
         self.timeout = timeout
         self._resolved_julia: Path | None = None
@@ -180,9 +177,10 @@ class OpenAdmixtureRunner:
           type: tuple[str, Ellipsis]
         """
         script = files("admixture").joinpath("julia/run_openadmixture.jl")
-        command: list[str] = [self._julia_for_command()]
-        if self.project_dir is not None:
-            command.append(f"--project={self.project_dir}")
+        command: list[str] = [
+            self._julia_for_command(),
+            f"--project={self.project_dir}",
+        ]
         if threads is not None:
             command.append(f"--threads={threads}")
         command.extend(
@@ -217,13 +215,7 @@ class OpenAdmixtureRunner:
         if self.check_openadmixture():
             return
         if self.install_if_missing:
-            if self.project_dir is None:
-                raise OpenAdmixtureNotInstalledError(
-                    f"{OPENADMIXTURE_NOT_INSTALLED_MESSAGE}\n"
-                    "install_if_missing=True requires project_dir so that the "
-                    "global Julia environment is not modified unexpectedly."
-                )
-            bootstrap_julia_project(self.project_dir, self._julia_for_command())
+            setup(julia=self._julia_for_command())
             if self.check_openadmixture():
                 return
         raise OpenAdmixtureNotInstalledError(OPENADMIXTURE_NOT_INSTALLED_MESSAGE)
@@ -342,7 +334,6 @@ def run_openadmixture(
     k: int,
     out_prefix: str | Path,
     julia: str | Path = "julia",
-    project_dir: str | Path | None = None,
     install_if_missing: bool = False,
     timeout: float | None = None,
     seed: int | None = None,
@@ -360,8 +351,6 @@ def run_openadmixture(
         type: str | Path
       julia:
         type: str | Path
-      project_dir:
-        type: str | Path | None
       install_if_missing:
         type: bool
       timeout:
@@ -377,7 +366,6 @@ def run_openadmixture(
     """
     runner = OpenAdmixtureRunner(
         julia=julia,
-        project_dir=project_dir,
         install_if_missing=install_if_missing,
         timeout=timeout,
     )

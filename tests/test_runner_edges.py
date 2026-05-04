@@ -12,7 +12,7 @@ import pandas as pd
 import pytest
 
 from admixture import OpenAdmixtureResult, OpenAdmixtureRunner, run_openadmixture
-from admixture.exceptions import OpenAdmixtureNotInstalledError, OpenAdmixtureRunError
+from admixture.exceptions import OpenAdmixtureRunError
 from admixture.julia_env import JuliaInfo
 
 FAM_TEXT = """F1 S1 0 0 1 -9
@@ -179,44 +179,19 @@ def test_runner_os_error_is_wrapped(
         runner.run(bfile=bfile, k=2, out_prefix=tmp_path / "out")
 
 
-def test_ensure_openadmixture_bootstrap_requires_project_dir(
-    monkeypatch: pytest.MonkeyPatch,
-) -> None:
-    """
-    title: Automatic OpenADMIXTURE bootstrap requires a project directory.
-    parameters:
-      monkeypatch:
-        type: pytest.MonkeyPatch
-    """
-    runner = OpenAdmixtureRunner(install_if_missing=True)
-    monkeypatch.setattr(runner, "check_openadmixture", lambda: False)
-
-    with pytest.raises(OpenAdmixtureNotInstalledError, match="requires project_dir"):
-        runner._ensure_openadmixture_available()
-
-
 def test_ensure_openadmixture_bootstrap_succeeds(
     monkeypatch: pytest.MonkeyPatch,
-    tmp_path: Path,
 ) -> None:
     """
     title: Automatic OpenADMIXTURE bootstrap succeeds when import checks pass.
     parameters:
       monkeypatch:
         type: pytest.MonkeyPatch
-      tmp_path:
-        type: Path
     """
-    runner = OpenAdmixtureRunner(
-        project_dir=tmp_path / "julia",
-        install_if_missing=True,
-    )
+    runner = OpenAdmixtureRunner(install_if_missing=True)
     checks = iter([False, True])
     monkeypatch.setattr(runner, "check_openadmixture", lambda: next(checks))
-    monkeypatch.setattr(
-        "admixture.runner.bootstrap_julia_project",
-        lambda project_dir, julia: None,
-    )
+    monkeypatch.setattr("admixture.runner.setup", lambda julia: runner.project_dir)
 
     runner._ensure_openadmixture_available()
 
@@ -233,6 +208,11 @@ def test_run_openadmixture_uses_temporary_runner(
       tmp_path:
         type: Path
     """
+
+    monkeypatch.setattr(
+        "admixture.runner.default_julia_project_dir",
+        lambda: tmp_path / "packaged-julia",
+    )
 
     def fake_run(
         self: OpenAdmixtureRunner,
@@ -264,7 +244,7 @@ def test_run_openadmixture_uses_temporary_runner(
         returns:
           type: OpenAdmixtureResult
         """
-        assert self.project_dir == tmp_path / "julia"
+        assert self.project_dir == tmp_path / "packaged-julia"
         assert self.install_if_missing is True
         assert self.timeout == 10
         assert bfile == tmp_path / "example"
@@ -294,7 +274,6 @@ def test_run_openadmixture_uses_temporary_runner(
         bfile=tmp_path / "example",
         k=2,
         out_prefix=tmp_path / "out",
-        project_dir=tmp_path / "julia",
         install_if_missing=True,
         timeout=10,
         seed=1,

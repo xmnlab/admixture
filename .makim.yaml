@@ -28,19 +28,26 @@ groups:
 
   setup:
     tasks:
-      julia:
-        help: install OpenADMIXTURE.jl into a project-local Julia environment
+      install:
+        help: install Python dependencies and then install OpenADMIXTURE.jl
         args:
-          project_dir:
-            help: Julia project directory to create or update
-            type: string
-            default: julia_env
           julia:
             help: Julia executable name or path
             type: string
             default: julia
         run: |
-          python -m admixture.cli --project-dir "${{ args.project_dir }}" --julia "${{ args.julia }}"
+          poetry install --with dev
+          poetry run python -m admixture.cli --julia "${{ args.julia }}"
+
+      julia:
+        help: instantiate the packaged OpenADMIXTURE.jl Julia project
+        args:
+          julia:
+            help: Julia executable name or path
+            type: string
+            default: julia
+        run: |
+          python -m admixture.cli --julia "${{ args.julia }}"
 
   tests:
     tasks:
@@ -101,14 +108,14 @@ groups:
         run: |
           mkdir -p .quarto-tmp .quarto-cache .quarto-home .deno-cache
           rm -rf docs/_site build
-          env TMPDIR=$PWD/.quarto-tmp XDG_CACHE_HOME=$PWD/.quarto-cache DENO_DIR=$PWD/.deno-cache HOME=$PWD/.quarto-home quarto render docs
+          env -u QUARTO_SHARE_PATH -u QUARTO_DENO -u QUARTO_DENO_DOM -u QUARTO_PANDOC -u QUARTO_DART_SASS -u QUARTO_TYPST -u QUARTO_ESBUILD -u QUARTO_CONDA_PREFIX TMPDIR=$PWD/.quarto-tmp XDG_CACHE_HOME=$PWD/.quarto-cache DENO_DIR=$PWD/.deno-cache HOME=$PWD/.quarto-home quarto render docs
           cp -a docs/_site build
 
       preview:
         help: preview the Quarto documentation site locally
         run: |
           mkdir -p .quarto-tmp .quarto-cache .quarto-home .deno-cache
-          env TMPDIR=$PWD/.quarto-tmp XDG_CACHE_HOME=$PWD/.quarto-cache DENO_DIR=$PWD/.deno-cache HOME=$PWD/.quarto-home quarto preview docs
+          env -u QUARTO_SHARE_PATH -u QUARTO_DENO -u QUARTO_DENO_DOM -u QUARTO_PANDOC -u QUARTO_DART_SASS -u QUARTO_TYPST -u QUARTO_ESBUILD -u QUARTO_CONDA_PREFIX TMPDIR=$PWD/.quarto-tmp XDG_CACHE_HOME=$PWD/.quarto-cache DENO_DIR=$PWD/.deno-cache HOME=$PWD/.quarto-home quarto preview docs
 
   package:
     tasks:

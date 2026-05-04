@@ -21,12 +21,7 @@ def _build_setup_parser() -> argparse.ArgumentParser:
     """
     parser = argparse.ArgumentParser(
         prog="admixture-setup",
-        description="Install OpenADMIXTURE.jl into an explicit Julia project.",
-    )
-    parser.add_argument(
-        "--project-dir",
-        required=True,
-        help="Julia project directory to create or update.",
+        description="Instantiate the packaged OpenADMIXTURE.jl Julia project.",
     )
     parser.add_argument(
         "--julia",
@@ -48,12 +43,12 @@ def setup_main(argv: Sequence[str] | None = None) -> int:
     parser = _build_setup_parser()
     args = parser.parse_args(argv)
     try:
-        setup(project_dir=args.project_dir, julia=args.julia)
+        project_dir = setup(julia=args.julia)
     except OpenAdmixtureError as exc:
         print(exc, file=sys.stderr)
         return 1
 
-    print(f"OpenADMIXTURE.jl installed in Julia project: {args.project_dir}")
+    print(f"Packaged OpenADMIXTURE.jl Julia project instantiated: {project_dir}")
     return 0
 
 

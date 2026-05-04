@@ -29,11 +29,12 @@ Python layer for:
 
 ```bash
 pip install admixture
-admixture-setup --project-dir julia_env
+admixture-setup
 ```
 
-The `admixture-setup` command installs OpenADMIXTURE.jl into the explicit Julia
-project directory you provide.
+The wheel includes a Julia project under the Python package at
+`admixture/julia-env`. `admixture-setup` runs `Pkg.instantiate()` for that
+packaged project.
 
 ## Installation for development
 
@@ -44,9 +45,11 @@ Python environment and common compiled packages; Poetry installs the project.
 conda env create -f conda.yaml
 conda activate admixture
 poetry config virtualenvs.create false
-poetry install --with dev
-poetry run admixture-setup --project-dir julia_env
+makim setup.install
 ```
+
+`makim setup.install` runs `poetry install --with dev` and then instantiates the
+packaged Julia project.
 
 For a pip-style editable install inside the activated conda environment:
 
@@ -91,51 +94,27 @@ Install Julia from <https://julialang.org/downloads/> and check it is available:
 julia --version
 ```
 
-The upstream OpenADMIXTURE.jl documentation installs from GitHub URLs:
+The Python package ships a Julia project with `Project.toml` and
+`Manifest.toml`. Instantiate it with:
 
 ```bash
-julia -e 'using Pkg; Pkg.add(url="https://github.com/kose-y/SparseKmeansFeatureRanking.jl"); Pkg.add(url="https://github.com/OpenMendel/OpenADMIXTURE.jl")'
+admixture-setup
 ```
 
-For a project-local Julia environment:
-
-```bash
-mkdir julia_env
-julia --project=julia_env -e 'using Pkg; Pkg.add(url="https://github.com/kose-y/SparseKmeansFeatureRanking.jl"); Pkg.add(url="https://github.com/OpenMendel/OpenADMIXTURE.jl")'
-```
-
-Then pass the project directory from Python:
-
-```python
-from admixture import OpenAdmixtureRunner
-
-runner = OpenAdmixtureRunner(project_dir="julia_env")
-```
-
-The Python package also installs a setup command:
-
-```bash
-admixture-setup --project-dir julia_env
-```
-
-From Poetry, run:
-
-```bash
-poetry run admixture-setup --project-dir julia_env
-```
+From Poetry, run `poetry run admixture-setup`.
 
 Or bootstrap from Python:
 
 ```python
 import admixture
 
-admixture.setup(project_dir="julia_env")
+project_dir = admixture.setup()
 ```
 
-`admixture.setup()` requires `project_dir` so the global Julia environment is
-not modified unexpectedly. The CLI has the same requirement.
+`admixture.setup()` and `admixture-setup` never modify the global Julia
+environment. `OpenAdmixtureRunner()` always uses the packaged Julia project.
 `OpenAdmixtureRunner(install_if_missing=True)` is also available for explicit
-opt-in bootstrapping during a run.
+opt-in instantiation during a run.
 
 ## Basic usage
 
@@ -144,7 +123,6 @@ from admixture import OpenAdmixtureRunner
 
 runner = OpenAdmixtureRunner(
     julia="julia",
-    project_dir=None,
     install_if_missing=False,
 )
 
@@ -249,8 +227,7 @@ path to `OpenAdmixtureRunner(julia=...)`.
 
 ### OpenADMIXTURE.jl not installed
 
-Install the upstream Julia package in the selected Julia environment, or create
-a project-local environment and pass `project_dir=...`.
+Run `admixture-setup` to instantiate the packaged Julia project.
 
 ### Missing PLINK files
 

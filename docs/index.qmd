@@ -28,7 +28,7 @@ project.
 ```python
 from admixture import OpenAdmixtureRunner
 
-runner = OpenAdmixtureRunner(project_dir="julia_env")
+runner = OpenAdmixtureRunner()
 
 result = runner.run(
     bfile="data/example",

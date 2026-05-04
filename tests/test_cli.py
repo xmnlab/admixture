@@ -27,26 +27,24 @@ def test_setup_main_calls_setup(
       capsys:
         type: pytest.CaptureFixture[str]
     """
-    calls: list[tuple[str | Path, str | Path]] = []
+    calls: list[str | Path] = []
 
-    def fake_setup(*, project_dir: str | Path, julia: str | Path) -> None:
+    def fake_setup(*, julia: str | Path) -> Path:
         """
         title: Record setup arguments.
         parameters:
-          project_dir:
-            type: str | Path
           julia:
             type: str | Path
+        returns:
+          type: Path
         """
-        calls.append((project_dir, julia))
+        calls.append(julia)
+        return tmp_path / "packaged-julia"
 
-    project_dir = tmp_path / "julia env"
     monkeypatch.setattr(cli, "setup", fake_setup)
 
     returncode = cli.setup_main(
         [
-            "--project-dir",
-            str(project_dir),
             "--julia",
             "/opt/julia/bin/julia",
         ]
@@ -54,8 +52,49 @@ def test_setup_main_calls_setup(
 
     captured = capsys.readouterr()
     assert returncode == 0
-    assert calls == [(str(project_dir), "/opt/julia/bin/julia")]
-    assert "OpenADMIXTURE.jl installed" in captured.out
+    assert calls == ["/opt/julia/bin/julia"]
+    assert "Julia project instantiated" in captured.out
+    assert str(tmp_path / "packaged-julia") in captured.out
+    assert captured.err == ""
+
+
+def test_setup_main_uses_default_julia(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    """
+    title: The setup command can use the default Julia executable.
+    parameters:
+      monkeypatch:
+        type: pytest.MonkeyPatch
+      tmp_path:
+        type: Path
+      capsys:
+        type: pytest.CaptureFixture[str]
+    """
+    calls: list[str | Path] = []
+    project_dir = tmp_path / "packaged-julia"
+
+    def fake_setup(*, julia: str | Path) -> Path:
+        """
+        title: Record setup arguments and return the packaged path.
+        parameters:
+          julia:
+            type: str | Path
+        returns:
+          type: Path
+        """
+        calls.append(julia)
+        return project_dir
+
+    monkeypatch.setattr(cli, "setup", fake_setup)
+
+    returncode = cli.setup_main([])
+
+    captured = capsys.readouterr()
+    assert returncode == 0
+    assert calls == ["julia"]
     assert str(project_dir) in captured.out
     assert captured.err == ""
 
@@ -76,20 +115,20 @@ def test_setup_main_reports_package_errors(
         type: pytest.CaptureFixture[str]
     """
 
-    def fake_setup(*, project_dir: str | Path, julia: str | Path) -> None:
+    def fake_setup(*, julia: str | Path) -> Path:
         """
         title: Raise a Julia lookup error.
         parameters:
-          project_dir:
-            type: str | Path
           julia:
             type: str | Path
+        returns:
+          type: Path
         """
         raise JuliaNotFoundError("no julia")
 
     monkeypatch.setattr(cli, "setup", fake_setup)
 
-    returncode = cli.setup_main(["--project-dir", str(tmp_path / "julia")])
+    returncode = cli.setup_main([])
 
     captured = capsys.readouterr()
     assert returncode == 1
