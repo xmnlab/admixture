@@ -246,11 +246,30 @@ Runtime tests require all of:
 - Julia on `PATH`;
 - OpenADMIXTURE.jl installed;
 - malariagen-data installed in the development environment on Python `<3.13`.
+- Google Cloud Application Default Credentials for malariagen-data GCS access.
+- access granted to MalariaGEN data on Google Cloud Storage.
 
 These tests fail if Julia or OpenADMIXTURE.jl is unavailable. The
 malariagen-data runtime test is development-only, skips on Python 3.13+, and
 imports `malariagen_data` inside the test only, so the package does not gain a
 production dependency on malariagen-data.
+
+Authenticate locally with:
+
+```bash
+makim gcloud.auth
+```
+
+For non-interactive local runs with a service-account JSON key:
+
+```bash
+export GOOGLE_APPLICATION_CREDENTIALS=/path/to/service-account.json
+```
+
+For GitHub Actions, set the `GOOGLE_CREDENTIALS` repository secret to a
+service-account JSON key with access to MalariaGEN data on Google Cloud Storage.
+A Google API key is not sufficient because malariagen-data uses Google Cloud
+Application Default Credentials for GCS.
 
 Run tests with:
 

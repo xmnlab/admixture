@@ -32,6 +32,27 @@ def _import_malariagen_data() -> Any:
     return malariagen_data
 
 
+def _assert_google_application_default_credentials() -> None:
+    """
+    title: Fail early when Google Cloud ADC is unavailable.
+    """
+    import google.auth  # noqa: PLC0415 - used only by malariagen-data tests
+
+    from google.auth.exceptions import GoogleAuthError  # noqa: PLC0415
+
+    try:
+        google.auth.default(scopes=["https://www.googleapis.com/auth/cloud-platform"])
+    except GoogleAuthError as error:
+        msg = (
+            "malariagen-data runtime tests require Google Cloud Application "
+            "Default Credentials for GCS access. For local development, run "
+            "`makim gcloud.auth` or `gcloud auth application-default login`. "
+            "For CI, configure the GOOGLE_CREDENTIALS secret with a "
+            "service-account JSON key; a Google API key is not enough."
+        )
+        raise AssertionError(msg) from error
+
+
 def _openadmixture_runner() -> OpenAdmixtureRunner:
     """
     title: Create a runner backed by a real Julia/OpenADMIXTURE.jl environment.
@@ -82,11 +103,16 @@ def _ag3_client(tmp_path: Path) -> Any:
     returns:
       type: Any
     """
+    _assert_google_application_default_credentials()
     malariagen_data = _import_malariagen_data()
     results_cache = os.environ.get("ADMIXTURE_TEST_MALARIAGEN_RESULTS_CACHE")
     if results_cache is None:
         results_cache = str(tmp_path / "malariagen-results-cache")
-    return malariagen_data.Ag3(results_cache=results_cache)
+    return malariagen_data.Ag3(
+        results_cache=results_cache,
+        retry=_int_from_env("ADMIXTURE_TEST_MALARIAGEN_GCS_RETRY", 3),
+        timeout=_int_from_env("ADMIXTURE_TEST_MALARIAGEN_GCS_TIMEOUT", 60),
+    )
 
 
 def _malariagen_plink_prefix(tmp_path: Path) -> Path:

@@ -49,6 +49,12 @@ groups:
         run: |
           python -m admixture.cli --julia "${{ args.julia }}"
 
+  gcloud:
+    tasks:
+      auth:
+        help: create local Google Cloud Application Default Credentials
+        run: gcloud auth application-default login
+
   tests:
     tasks:
       unit:

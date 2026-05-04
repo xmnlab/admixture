@@ -8,3 +8,4 @@ dependencies:
   - julia
   - poetry
   - nodejs
+  - google-cloud-sdk
