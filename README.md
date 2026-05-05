@@ -29,11 +29,11 @@ Python layer for:
 
 ```bash
 pip install admixture
-admixture-setup
+admixture setup
 ```
 
 The wheel includes a Julia project under the Python package at
-`admixture/julia-env`. `admixture-setup` runs `Pkg.instantiate()` for that
+`admixture/julia-env`. `admixture setup` runs `Pkg.instantiate()` for that
 packaged project.
 
 ## Installation for development
@@ -117,10 +117,10 @@ The Python package ships a Julia project with `Project.toml` and
 `Manifest.toml`. Instantiate it with:
 
 ```bash
-admixture-setup
+admixture setup
 ```
 
-From Poetry, run `poetry run admixture-setup`.
+From Poetry, run `poetry run admixture setup`.
 
 Or bootstrap from Python:
 
@@ -130,7 +130,7 @@ import admixture
 project_dir = admixture.setup()
 ```
 
-`admixture.setup()` and `admixture-setup` never modify the global Julia
+`admixture.setup()` and `admixture setup` never modify the global Julia
 environment. `OpenAdmixtureRunner()` always uses the packaged Julia project.
 `OpenAdmixtureRunner(install_if_missing=True)` is also available for explicit
 opt-in instantiation during a run.
@@ -262,7 +262,7 @@ path to `OpenAdmixtureRunner(julia=...)`.
 
 ### OpenADMIXTURE.jl not installed
 
-Run `admixture-setup` to instantiate the packaged Julia project.
+Run `admixture setup` to instantiate the packaged Julia project.
 
 ### Missing PLINK files
 

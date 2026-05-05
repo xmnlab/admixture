@@ -16,7 +16,7 @@ dependencies = [
 ]
 
 [project.scripts]
-admixture-setup = "admixture.cli:setup_main"
+admixture = "admixture.cli:main"
 
 
 [build-system]

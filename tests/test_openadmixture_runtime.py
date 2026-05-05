@@ -46,7 +46,7 @@ def test_openadmixture_runs_on_tiny_local_plink(tmp_path: Path) -> None:
     runner = OpenAdmixtureRunner(timeout=120)
     assert runner.check_openadmixture(), (
         "OpenADMIXTURE.jl is required for runtime tests. Install it in the "
-        "packaged Julia project by running `admixture-setup`."
+        "packaged Julia project by running `admixture setup`."
     )
 
     result = runner.run(

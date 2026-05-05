@@ -17,7 +17,7 @@ runner = OpenAdmixtureRunner(julia="/path/to/julia")
 Instantiate the packaged Julia project:
 
 ```bash
-admixture-setup
+admixture setup
 ```
 
 ## PLINK files are missing or empty

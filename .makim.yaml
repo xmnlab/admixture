@@ -34,7 +34,7 @@ groups:
           juliaup add release
           juliaup default release
           poetry install --with dev
-          poetry run python -m admixture.cli
+          poetry run admixture setup
 
       julia:
         help: instantiate the packaged OpenADMIXTURE.jl Julia project
@@ -44,7 +44,7 @@ groups:
             type: string
             default: julia
         run: |
-          python -m admixture.cli --julia "${{ args.julia }}"
+          python -m admixture.cli setup --julia "${{ args.julia }}"
 
   gcloud:
     tasks:

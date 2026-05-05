@@ -74,7 +74,7 @@ The path is the packaged Julia project returned by
 Equivalent installed command:
 
 ```bash
-admixture-setup --julia julia
+admixture setup --julia julia
 ```
 
 ## `OpenAdmixtureResult`

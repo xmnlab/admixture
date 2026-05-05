@@ -12,7 +12,7 @@ from admixture import cli
 from admixture.exceptions import JuliaNotFoundError
 
 
-def test_setup_main_calls_setup(
+def test_main_setup_calls_setup(
     monkeypatch: pytest.MonkeyPatch,
     tmp_path: Path,
     capsys: pytest.CaptureFixture[str],
@@ -43,8 +43,9 @@ def test_setup_main_calls_setup(
 
     monkeypatch.setattr(cli, "setup", fake_setup)
 
-    returncode = cli.setup_main(
+    returncode = cli.main(
         [
+            "setup",
             "--julia",
             "/opt/julia/bin/julia",
         ]
@@ -58,7 +59,7 @@ def test_setup_main_calls_setup(
     assert captured.err == ""
 
 
-def test_setup_main_uses_default_julia(
+def test_main_setup_uses_default_julia(
     monkeypatch: pytest.MonkeyPatch,
     tmp_path: Path,
     capsys: pytest.CaptureFixture[str],
@@ -90,7 +91,7 @@ def test_setup_main_uses_default_julia(
 
     monkeypatch.setattr(cli, "setup", fake_setup)
 
-    returncode = cli.setup_main([])
+    returncode = cli.main(["setup"])
 
     captured = capsys.readouterr()
     assert returncode == 0
@@ -99,7 +100,7 @@ def test_setup_main_uses_default_julia(
     assert captured.err == ""
 
 
-def test_setup_main_reports_package_errors(
+def test_main_setup_reports_package_errors(
     monkeypatch: pytest.MonkeyPatch,
     tmp_path: Path,
     capsys: pytest.CaptureFixture[str],
@@ -128,7 +129,7 @@ def test_setup_main_reports_package_errors(
 
     monkeypatch.setattr(cli, "setup", fake_setup)
 
-    returncode = cli.setup_main([])
+    returncode = cli.main(["setup"])
 
     captured = capsys.readouterr()
     assert returncode == 1

@@ -37,7 +37,7 @@ or, after installing from PyPI:
 
 ```bash
 pip install admixture
-admixture-setup
+admixture setup
 ```
 
 Then verify that Julia and OpenADMIXTURE.jl are visible:

@@ -8,11 +8,11 @@ From PyPI:
 
 ```bash
 pip install admixture
-admixture-setup
+admixture setup
 ```
 
 The wheel includes a Julia project under the Python package at
-`admixture/julia-env`. `admixture-setup` runs `Pkg.instantiate()` for that
+`admixture/julia-env`. `admixture setup` runs `Pkg.instantiate()` for that
 packaged project.
 
 This repository uses **conda and Poetry together**. The conda environment is
@@ -126,13 +126,13 @@ The Python package ships a Julia project with `Project.toml` and
 `Manifest.toml`. Instantiate it with:
 
 ```bash
-admixture-setup
+admixture setup
 ```
 
 From Poetry, use:
 
 ```bash
-poetry run admixture-setup
+poetry run admixture setup
 ```
 
 You can also call the same setup helper from Python:
