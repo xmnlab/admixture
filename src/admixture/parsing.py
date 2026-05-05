@@ -195,6 +195,23 @@ def _candidate_paths(out_prefix: Path, k: int, extension: str) -> list[Path]:
     ]
 
 
+def _paths_refer_to_same_file(left: Path, right: Path) -> bool:
+    """
+    title: Check whether two paths resolve to the same filesystem entry.
+    parameters:
+      left:
+        type: Path
+      right:
+        type: Path
+    returns:
+      type: bool
+    """
+    try:
+        return left.samefile(right)
+    except OSError:
+        return False
+
+
 def _existing_unique(candidates: Iterable[Path], *, label: str) -> list[Path]:
     """
     title: Return existing candidates while rejecting ambiguous matches.
@@ -213,6 +230,8 @@ def _existing_unique(candidates: Iterable[Path], *, label: str) -> list[Path]:
             continue
         seen.add(candidate)
         if candidate.exists():
+            if any(_paths_refer_to_same_file(candidate, path) for path in existing):
+                continue
             existing.append(candidate)
     if len(existing) > 1:
         files = "\n".join(f"  - {path}" for path in existing)
