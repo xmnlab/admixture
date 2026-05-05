@@ -40,6 +40,8 @@ packaged project.
 
 This repository uses **conda and Poetry together**. Conda provides the base
 Python environment and common compiled packages; Poetry installs the project.
+`juliaup` is included in the conda environment. Use it to install/select a Julia
+runtime inside `makim setup.install`.
 
 ```bash
 conda env create -f conda/dev-linux.yaml
@@ -92,13 +94,24 @@ Git.
 
 ## Julia and OpenADMIXTURE.jl setup
 
-Julia is an external runtime, not a Python dependency.
-
-Install Julia from <https://julialang.org/downloads/> and check it is available:
+Julia is an external runtime, not a Python dependency. The development conda
+environments include `juliaup`, a cross-platform Julia installer and version
+manager from conda-forge:
 
 ```bash
+juliaup add release
+juliaup default release
 julia --version
 ```
+
+The conda environment files in this repository include `juliaup` instead of the
+old `julia` conda package because `juliaup` is available on Linux, macOS, and
+Windows. If you are not using the provided conda environment files, install it
+with `conda install -c conda-forge juliaup` first.
+
+For non-conda installs, the official Julia installer from
+<https://julialang.org/downloads/> is also supported as long as `julia` is on
+`PATH`.
 
 The Python package ships a Julia project with `Project.toml` and
 `Manifest.toml`. Instantiate it with:
@@ -208,9 +221,11 @@ PowerShell example:
 ```powershell
 conda env create -f conda/dev-win.yaml
 conda activate admixture
+juliaup add release
+juliaup default release
+julia --version
 poetry config virtualenvs.create false
 poetry install --with dev
-julia --version
 ```
 
 If Julia is not on `PATH`, pass the executable explicitly:

@@ -12,7 +12,8 @@ makim setup.install
 
 Use `conda/dev-linux.yaml`, `conda/dev-macos.yaml`, or `conda/dev-win.yaml`
 depending on your operating system. This project uses a `src/` package layout
-and Python 3.10+.
+and Python 3.10+. The conda environment includes `juliaup`; use
+`juliaup add release` and `juliaup default release` if `julia --version` fails.
 
 ## Tests
 

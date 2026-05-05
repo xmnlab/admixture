@@ -16,7 +16,8 @@ The wheel includes a Julia project under the Python package at
 packaged project.
 
 This repository uses **conda and Poetry together**. The conda environment is
-named `admixture`.
+named `admixture`. It includes `juliaup`; use it to install/select a Julia
+runtime inside `makim setup.install`.
 
 ```bash
 conda env create -f conda/dev-linux.yaml
@@ -62,14 +63,24 @@ quarto preview docs
 
 ## Julia runtime
 
-Julia is an external runtime, not a Python dependency.
-
-Install Julia from <https://julialang.org/downloads/> and verify it is on
-`PATH`:
+Julia is an external runtime, not a Python dependency. The development conda
+environments include `juliaup`, a cross-platform Julia installer and version
+manager from conda-forge:
 
 ```bash
+juliaup add release
+juliaup default release
 julia --version
 ```
+
+The conda environment files in this repository include `juliaup` instead of the
+old `julia` conda package because `juliaup` is available on Linux, macOS, and
+Windows. If you are not using the provided conda environment files, install it
+with `conda install -c conda-forge juliaup` first.
+
+For non-conda installs, the official Julia installer from
+<https://julialang.org/downloads/> is also supported as long as `julia` is on
+`PATH`.
 
 You can also pass an explicit executable path:
 

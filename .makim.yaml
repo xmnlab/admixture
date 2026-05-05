@@ -30,14 +30,11 @@ groups:
     tasks:
       install:
         help: install Python dependencies and then install OpenADMIXTURE.jl
-        args:
-          julia:
-            help: Julia executable name or path
-            type: string
-            default: julia
         run: |
+          juliaup add release
+          juliaup default release
           poetry install --with dev
-          poetry run python -m admixture.cli --julia "${{ args.julia }}"
+          poetry run python -m admixture.cli
 
       julia:
         help: instantiate the packaged OpenADMIXTURE.jl Julia project

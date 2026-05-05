@@ -28,7 +28,9 @@ makim setup.install
 ```
 
 Use `conda/dev-linux.yaml`, `conda/dev-macos.yaml`, or `conda/dev-win.yaml`
-depending on the operating system.
+depending on the operating system. The conda environment includes `juliaup`; the
+conda files should not depend on the old `julia` conda package because it is
+unavailable on all supported platforms.
 
 This project intentionally uses conda and Poetry together. Conda supplies the
 base development environment and external tools such as Quarto. Poetry manages

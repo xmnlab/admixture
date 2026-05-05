@@ -5,6 +5,6 @@ channels:
 dependencies:
   - python
   - pip
-  - julia
+  - juliaup
   - poetry
   - nodejs
