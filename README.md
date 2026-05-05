@@ -222,8 +222,9 @@ runner = OpenAdmixtureRunner(
 ```
 
 The Windows conda environment does not include the Google Cloud CLI. To run
-malariagen-data runtime tests on Windows, install Google Cloud CLI with the
-official Windows installer, open a new terminal, and then authenticate:
+manual malariagen-data experiments against Google Cloud Storage on Windows,
+install Google Cloud CLI with the official Windows installer, open a new
+terminal, and then authenticate:
 
 ```powershell
 (New-Object Net.WebClient).DownloadFile(
@@ -264,16 +265,18 @@ Runtime tests require all of:
 
 - Julia on `PATH`;
 - OpenADMIXTURE.jl installed;
-- malariagen-data installed in the development environment on Python `<3.13`.
-- Google Cloud Application Default Credentials for malariagen-data GCS access.
-- access granted to MalariaGEN data on Google Cloud Storage.
 
-These tests fail if Julia or OpenADMIXTURE.jl is unavailable. The
-malariagen-data runtime test is development-only, skips on Python 3.13+, and
-imports `malariagen_data` inside the test only, so the package does not gain a
-production dependency on malariagen-data.
+These tests fail if Julia or OpenADMIXTURE.jl is unavailable. The default
+runtime test uses a tiny local PLINK data set and does not read from Google
+Cloud Storage.
 
-Authenticate locally with:
+The malariagen-data compatibility test is development-only, skips on Python
+3.13+, and imports `malariagen_data` inside the test only, so the package does
+not gain a production dependency on malariagen-data.
+
+For manual experiments against real MalariaGEN data on Google Cloud Storage, you
+need access to the relevant bucket and Google Cloud Application Default
+Credentials. Authenticate locally with:
 
 ```bash
 makim gcloud.auth
@@ -285,10 +288,11 @@ For non-interactive local runs with a service-account JSON key:
 export GOOGLE_APPLICATION_CREDENTIALS=/path/to/service-account.json
 ```
 
-For GitHub Actions, set the `GOOGLE_CREDENTIALS` repository secret to a
-service-account JSON key with access to MalariaGEN data on Google Cloud Storage.
-A Google API key is not sufficient because malariagen-data uses Google Cloud
-Application Default Credentials for GCS.
+For custom GitHub Actions workflows that need real MalariaGEN-GCS access, set
+the `GOOGLE_CREDENTIALS` repository secret to a service-account JSON key with
+access to MalariaGEN data on Google Cloud Storage. A Google API key is not
+sufficient because malariagen-data uses Google Cloud Application Default
+Credentials for GCS. This is not required by the default CI test suite.
 
 Run tests with:
 

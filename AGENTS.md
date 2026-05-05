@@ -82,11 +82,10 @@ fail, not skip, when the Julia runtime or OpenADMIXTURE.jl is unavailable.
 Tests may use `malariagen-data` as a development-only dependency. Do not import
 `malariagen_data` from `src/`; keep it test-only to avoid a future circular
 dependency if `malariagen-data` depends on `admixture`. Tests that import
-`malariagen_data` must skip on Python 3.13+. malariagen-data runtime tests need
-Google Cloud Application Default Credentials; use `makim gcloud.auth` locally
-and `GOOGLE_CREDENTIALS` in GitHub Actions. The account must have access to
-MalariaGEN data on Google Cloud Storage. Do not use Google API keys for this
-path.
+`malariagen_data` must skip on Python 3.13+. Default tests should not read real
+MalariaGEN data from Google Cloud Storage; use tiny local PLINK fixtures for
+runtime tests. If an explicit opt-in GCS test is added, use Google Cloud
+Application Default Credentials, not Google API keys.
 
 Common checks:
 

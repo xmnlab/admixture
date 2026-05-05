@@ -8,7 +8,6 @@ on:
 
 env:
   VIRTUALENV_ACTIVATORS: "bash,python"
-  GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
 
 jobs:
   unit:
@@ -30,9 +29,6 @@ jobs:
     defaults:
       run:
         shell: bash -l {0}
-    permissions:
-      contents: read
-      id-token: write
     steps:
       - uses: actions/checkout@v4
 
@@ -49,24 +45,6 @@ jobs:
         run: |
           poetry config virtualenvs.create false
           poetry install --with dev
-
-      - name: Authenticate Google Cloud for malariagen-data
-        if: env.GOOGLE_CREDENTIALS != ''
-        uses: google-github-actions/auth@v2
-        with:
-          credentials_json: ${{ env.GOOGLE_CREDENTIALS }}
-          create_credentials_file: true
-          export_environment_variables: true
-
-      - name: Set up Google Cloud SDK
-        if: env.GOOGLE_CREDENTIALS != ''
-        uses: google-github-actions/setup-gcloud@v2
-        with:
-          version: ">= 363.0.0"
-
-      - name: Check Google Cloud CLI
-        if: env.GOOGLE_CREDENTIALS != ''
-        run: gcloud info
 
       - name: Instantiate OpenADMIXTURE.jl
         run: makim --verbose setup.julia

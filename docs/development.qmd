@@ -34,15 +34,16 @@ Run all tests:
 makim tests.all
 ```
 
-The malariagen-data runtime test exports a small Ag3 SNP panel to PLINK and then
-runs the wrapper against the exported files. Runtime tests require Julia and
-OpenADMIXTURE.jl and fail when either is unavailable. The malariagen-data test
-imports `malariagen_data` inside the test body only and skips only on Python
-3.13+, where malariagen-data is unavailable.
+The default runtime test creates a tiny local PLINK data set and runs the
+wrapper against it. Runtime tests require Julia and OpenADMIXTURE.jl and fail
+when either is unavailable.
 
-malariagen-data reads from Google Cloud Storage and requires Google Cloud
-Application Default Credentials. First request access to MalariaGEN data on
-Google Cloud Storage, then authenticate locally with:
+The malariagen-data compatibility test imports `malariagen_data` inside the test
+body only and skips only on Python 3.13+, where malariagen-data is unavailable.
+Default tests do not read from Google Cloud Storage.
+
+For manual experiments against real MalariaGEN data, first request access to the
+relevant Google Cloud Storage bucket, then authenticate locally with:
 
 ```bash
 makim gcloud.auth
@@ -54,22 +55,11 @@ For non-interactive local runs with a service-account JSON key:
 export GOOGLE_APPLICATION_CREDENTIALS=/path/to/service-account.json
 ```
 
-For GitHub Actions, configure the `GOOGLE_CREDENTIALS` repository secret with a
-service-account JSON key with access to MalariaGEN data on Google Cloud Storage.
-A Google API key is not sufficient for this path because the data client uses
-Application Default Credentials.
-
-The malariagen-data runtime test can be configured with:
-
-- `ADMIXTURE_TEST_MALARIAGEN_SAMPLE_SETS`
-- `ADMIXTURE_TEST_MALARIAGEN_SAMPLE_QUERY`
-- `ADMIXTURE_TEST_MALARIAGEN_REGION`
-- `ADMIXTURE_TEST_MALARIAGEN_N_SNPS`
-- `ADMIXTURE_TEST_MALARIAGEN_MIN_MINOR_AC`
-- `ADMIXTURE_TEST_MALARIAGEN_MAX_MISSING_AN`
-- `ADMIXTURE_TEST_MALARIAGEN_RESULTS_CACHE`
-- `ADMIXTURE_TEST_MALARIAGEN_GCS_RETRY`
-- `ADMIXTURE_TEST_MALARIAGEN_GCS_TIMEOUT`
+For custom GitHub Actions workflows that need real MalariaGEN-GCS access,
+configure the `GOOGLE_CREDENTIALS` repository secret with a service-account JSON
+key with access to MalariaGEN data on Google Cloud Storage. A Google API key is
+not sufficient for this path because the data client uses Application Default
+Credentials. This is not required by the default CI test suite.
 
 ## Lint and type checks
 

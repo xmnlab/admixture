@@ -62,11 +62,13 @@ either is unavailable:
 pytest tests
 ```
 
-The malariagen-data-backed runtime test skips only on Python 3.13+ because
-malariagen-data is unavailable there.
+The malariagen-data compatibility test skips only on Python 3.13+ because
+malariagen-data is unavailable there. Default tests do not read from Google
+Cloud Storage.
 
-It also needs access to MalariaGEN data on Google Cloud Storage and Google
-Cloud Application Default Credentials:
+If you run manual experiments against real MalariaGEN data on Google Cloud
+Storage, you need access to the relevant bucket and Google Cloud Application
+Default Credentials:
 
 ```bash
 makim gcloud.auth
@@ -78,8 +80,8 @@ For non-interactive local runs with a service-account JSON key, export:
 export GOOGLE_APPLICATION_CREDENTIALS=/path/to/service-account.json
 ```
 
-In GitHub Actions, provide a service-account JSON key in the
-`GOOGLE_CREDENTIALS` repository secret. The service account must have access to
-MalariaGEN data on Google Cloud Storage. Do not use a Google API key for this
-test; API keys do not provide the Application Default Credentials expected by
-malariagen-data.
+In GitHub Actions, a service-account JSON key can be provided in the
+`GOOGLE_CREDENTIALS` repository secret for workflows that need real
+MalariaGEN-GCS access. The service account must have access to the relevant
+bucket. Do not use a Google API key; API keys do not provide the Application
+Default Credentials expected by malariagen-data.
