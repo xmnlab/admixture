@@ -1,0 +1,52 @@
+---
+title: "Tutorials"
+---
+
+These tutorials tell the story of a typical `admixture` workflow: start with a
+binary PLINK data set, run the upstream Julia implementation via the Python
+wrapper, and bring the `.Q` and `.P` outputs back into Python for inspection.
+
+The package is deliberately small. It does not implement the ADMIXTURE
+algorithm, and it does not try to become a data-management library. Its job is
+to make one boundary clean: **Python in, OpenADMIXTURE.jl run, Python objects
+out**.
+
+## Start here
+
+- [First analysis with a tiny PLINK fixture](first-analysis.qmd) walks through a
+  complete local run using the tiny fixture stored in `tests/data/tiny-plink`.
+  Use this when you want to check that Python, Julia, OpenADMIXTURE.jl, and the
+  wrapper all work together before running on real data.
+
+- [Preparing data with malariagen-data](malariagen-data.qmd) shows how a future
+  or local analysis can use `malariagen-data` as a data-preparation step, export
+  a small SNP panel to PLINK, and then pass that PLINK prefix to `admixture`.
+  This is intentionally optional and requires Google Cloud Storage access for
+  real MalariaGEN data.
+
+## What you need before following the tutorials
+
+Install the Python package and instantiate the packaged Julia project:
+
+```bash
+conda activate admixture
+makim setup.install
+```
+
+or, after installing from PyPI:
+
+```bash
+pip install admixture
+admixture-setup
+```
+
+Then verify that Julia and OpenADMIXTURE.jl are visible:
+
+```python
+from admixture import OpenAdmixtureRunner
+
+runner = OpenAdmixtureRunner()
+runner.version_info()
+```
+
+If this fails, see [Troubleshooting](../troubleshooting.qmd).

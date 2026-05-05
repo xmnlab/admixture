@@ -15,6 +15,14 @@ website:
         text: Installation
       - href: usage.qmd
         text: Usage
+      - text: Tutorials
+        menu:
+          - href: tutorials/index.qmd
+            text: Overview
+          - href: tutorials/first-analysis.qmd
+            text: First analysis
+          - href: tutorials/malariagen-data.qmd
+            text: malariagen-data
       - href: api.qmd
         text: API
       - href: development.qmd
@@ -27,6 +35,11 @@ website:
       - index.qmd
       - installation.qmd
       - usage.qmd
+      - section: Tutorials
+        contents:
+          - tutorials/index.qmd
+          - tutorials/first-analysis.qmd
+          - tutorials/malariagen-data.qmd
       - api.qmd
       - development.qmd
       - troubleshooting.qmd

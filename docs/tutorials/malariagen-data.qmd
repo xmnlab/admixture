@@ -1,0 +1,148 @@
+---
+title: "Preparing data with malariagen-data"
+---
+
+A common real-world story is that the data do not begin as PLINK files. Suppose
+you are exploring a small panel of mosquito SNPs with
+[`malariagen-data`](https://malariagen.github.io/malariagen-data-python/) and
+you want to use OpenADMIXTURE.jl for a first ancestry run. The clean boundary is:
+
+1. use `malariagen-data` to select and export a small SNP panel;
+2. write the panel to binary PLINK files;
+3. pass the PLINK prefix to `admixture`.
+
+`admixture` does not import `malariagen_data` in its source package. In this
+repository, `malariagen-data` is a development-only dependency used for tests
+and local experiments. Keeping that boundary avoids a circular dependency if
+`malariagen-data` later chooses to depend on `admixture`.
+
+::: {.callout-note}
+Real MalariaGEN data in Google Cloud Storage requires access to the relevant
+bucket and Google Cloud Application Default Credentials. The default `admixture`
+test suite does not access GCS.
+:::
+
+## Authenticate only if you need real GCS data
+
+If your `malariagen-data` workflow reads from Google Cloud Storage, authenticate
+first:
+
+```bash
+makim gcloud.auth
+```
+
+For a non-interactive service-account workflow, set:
+
+```bash
+export GOOGLE_APPLICATION_CREDENTIALS=/path/to/service-account.json
+```
+
+The Google account or service account must already have access to the relevant
+MalariaGEN bucket. A Google API key is not sufficient for this path.
+
+## Export a small PLINK panel
+
+In a local exploration notebook, start by creating an Ag3 client. Keep the
+export small while you are developing the workflow: a short genomic region, a
+small number of SNPs, and a specific sample set.
+
+```python
+from pathlib import Path
+import malariagen_data
+
+ag3 = malariagen_data.Ag3(
+    results_cache="results/malariagen-cache",
+)
+
+output_dir = Path("results/ag3-plink")
+output_dir.mkdir(parents=True, exist_ok=True)
+
+plink_prefix = ag3.biallelic_snps_to_plink(
+    output_dir=str(output_dir),
+    region="2L:2,400,000-2,500,000",
+    sample_sets="AG1000G-CI",
+    n_snps=50,
+    min_minor_ac=2,
+    max_missing_an=0,
+    random_seed=42,
+    overwrite=True,
+    out="ag3_ci_small",
+)
+```
+
+The returned value is a PLINK prefix. You should see three files on disk:
+
+```python
+from pathlib import Path
+
+prefix = Path(plink_prefix)
+
+for suffix in ["bed", "bim", "fam"]:
+    path = Path(f"{prefix}.{suffix}")
+    print(path, path.exists(), path.stat().st_size)
+```
+
+This is the handoff point. Everything before this was data selection and export;
+everything after this is an OpenADMIXTURE run.
+
+## Run OpenADMIXTURE.jl through the wrapper
+
+Now pass the prefix to `admixture` exactly as you would for any other PLINK data
+set:
+
+```python
+from pathlib import Path
+from admixture import OpenAdmixtureRunner
+
+runner = OpenAdmixtureRunner(timeout=600)
+
+result = runner.run(
+    bfile=plink_prefix,
+    k=2,
+    out_prefix=Path("results/openadmixture/ag3_ci_k2"),
+    seed=42,
+    threads=4,
+)
+```
+
+Inspect the result in Python:
+
+```python
+print(result.summary())
+print(result.q.head())
+```
+
+The `.Q` table contains one row per sample and one column per ancestry
+component. If you want to join this back to sample metadata from
+`malariagen-data`, use the sample IDs from `result.q.index` as your key.
+
+## Save a reproducible artifact
+
+Write parsed CSV files next to the Julia outputs:
+
+```python
+result.to_csv("results/openadmixture/ag3_ci_k2")
+```
+
+For a notebook or report, keep three things together:
+
+- the parameters used for `biallelic_snps_to_plink`;
+- the `result.command` tuple showing how Julia was invoked;
+- the parsed `.Q` and `.P` CSV files.
+
+That combination makes it clear where the data came from, what model was run,
+and which Python objects were used downstream.
+
+## Scaling up carefully
+
+Once the small run works, scale one dimension at a time:
+
+- add more SNPs;
+- widen the genomic region;
+- include more sample sets;
+- try more values of `K`;
+- increase `threads` when running on a suitable machine.
+
+Do not start with the largest possible export. Small PLINK panels make it much
+easier to debug authentication, filtering, path handling, Julia setup, and result
+parsing before spending time on a full analysis.

@@ -1,0 +1,243 @@
+---
+title: "First analysis with a tiny PLINK fixture"
+---
+
+Imagine you have just joined a project where the population-genetics team works
+mostly in Python, but the ancestry model they want to use is implemented in
+Julia by [OpenADMIXTURE.jl](https://github.com/OpenMendel/OpenADMIXTURE.jl).
+Before sending a large cohort through the pipeline, you want a small end-to-end
+check: can Python find Julia, can OpenADMIXTURE.jl run, and can the wrapper
+parse the output into familiar Python objects?
+
+This tutorial uses the tiny PLINK fixture committed in the repository under
+`tests/data/tiny-plink`. The data are not biologically meaningful. They are just
+large enough to exercise the real runtime path without downloading data or
+requiring Google Cloud access.
+
+## The input: a PLINK prefix
+
+OpenADMIXTURE.jl reads binary PLINK 1 data. PLINK data are usually referenced by
+a **prefix**, not by one file. In this tutorial the prefix is:
+
+```text
+tests/data/tiny-plink/tiny
+```
+
+and it refers to these three files:
+
+```text
+tests/data/tiny-plink/tiny.bed
+tests/data/tiny-plink/tiny.bim
+tests/data/tiny-plink/tiny.fam
+```
+
+- `.bed` stores the genotype matrix in binary form;
+- `.bim` stores variant metadata;
+- `.fam` stores sample metadata.
+
+If you want to peek at the fixture from Python, the text files are easy to read
+with pandas:
+
+```python
+from pathlib import Path
+import pandas as pd
+
+prefix = Path("tests/data/tiny-plink/tiny")
+
+fam = pd.read_csv(
+    f"{prefix}.fam",
+    sep=r"\s+",
+    header=None,
+    names=[
+        "family_id",
+        "individual_id",
+        "paternal_id",
+        "maternal_id",
+        "sex",
+        "phenotype",
+    ],
+)
+
+bim = pd.read_csv(
+    f"{prefix}.bim",
+    sep=r"\s+",
+    header=None,
+    names=[
+        "chromosome",
+        "variant_id",
+        "cm_position",
+        "bp_position",
+        "allele_1",
+        "allele_2",
+    ],
+)
+
+print(fam.head())
+print(bim.head())
+```
+
+For the binary `.bed`, use `bed-reader` if you want to inspect genotypes:
+
+```python
+from bed_reader import open_bed
+
+bed = open_bed("tests/data/tiny-plink/tiny.bed")
+
+print(bed.shape)      # samples x variants
+print(bed.iid[:5])    # sample IDs from .fam
+print(bed.sid[:5])    # variant IDs from .bim
+
+genotypes = bed.read()
+print(genotypes[:3, :5])
+```
+
+You do not need to read `.bed` yourself to use `admixture`; the wrapper only
+needs the prefix.
+
+## A first K=2 run
+
+For a smoke test we will fit `K=2`. In a real analysis, `K` is part of the
+scientific question: it is the number of ancestral components the model should
+estimate. Here it simply gives us a compact result to inspect.
+
+```python
+from pathlib import Path
+from admixture import OpenAdmixtureRunner
+
+bfile = Path("tests/data/tiny-plink/tiny")
+out_prefix = Path("results/tutorials/tiny_k2")
+
+runner = OpenAdmixtureRunner(timeout=120)
+
+result = runner.run(
+    bfile=bfile,
+    k=2,
+    out_prefix=out_prefix,
+    seed=42,
+    threads=1,
+)
+```
+
+Several things happen in this one call:
+
+1. the wrapper checks that `tiny.bed`, `tiny.bim`, and `tiny.fam` exist;
+2. it checks that Julia can run;
+3. it checks that OpenADMIXTURE.jl can be imported from the packaged Julia
+   project;
+4. it launches a Julia subprocess with `shell=False`;
+5. it parses the `.Q`, `.P`, and `.log` outputs.
+
+The command is stored on the result for reproducibility:
+
+```python
+result.command
+```
+
+## Reading the ancestry proportions
+
+The main output is `result.q`, a pandas `DataFrame` with one row per individual
+and one column per ancestry component:
+
+```python
+result.q
+```
+
+For the tiny fixture, the index comes from the individual IDs in the `.fam`
+file:
+
+```python
+result.q.index.tolist()
+```
+
+Each row should sum to approximately one:
+
+```python
+result.q.sum(axis=1)
+```
+
+For quick summaries, you can assign each sample to the component with the
+largest ancestry proportion:
+
+```python
+assignments = result.q.idxmax(axis=1)
+assignments.value_counts()
+```
+
+This is not a replacement for careful interpretation, but it is a useful first
+sanity check when you are building a workflow.
+
+## Reading allele-frequency output
+
+OpenADMIXTURE.jl may also produce a `.P` file. The wrapper parses it as
+`result.p` when present:
+
+```python
+result.p
+```
+
+For this fixture, `result.p` has one row per ancestry component and one column
+per SNP. The parsed dimensions are also available from:
+
+```python
+result.summary()
+```
+
+## Saving results for the next step
+
+The Julia output files remain on disk, but it is often convenient to export the
+parsed tables as CSV for reporting or downstream Python notebooks:
+
+```python
+result.to_csv("results/tutorials/tiny_k2")
+```
+
+This writes files like:
+
+```text
+results/tutorials/tiny_k2.Q.csv
+results/tutorials/tiny_k2.P.csv
+```
+
+At this point you have a full round trip: PLINK input, real OpenADMIXTURE.jl
+execution, and parsed pandas outputs.
+
+## Trying another value of K
+
+A real analysis usually compares several values of `K`. You can make that
+explicit in a loop:
+
+```python
+from admixture import run_openadmixture
+
+for k in [2, 3, 4]:
+    result = run_openadmixture(
+        bfile="tests/data/tiny-plink/tiny",
+        k=k,
+        out_prefix=f"results/tutorials/tiny_k{k}",
+        seed=42,
+        threads=1,
+        timeout=120,
+    )
+    print(result.summary())
+```
+
+For the tiny fixture, the values are only a smoke test. For real data, choosing
+`K` should be guided by your sampling design, replicate runs, diagnostics, and
+biological interpretation.
+
+## Where to go next
+
+Once this tutorial works, replace the fixture prefix with your own PLINK prefix:
+
+```python
+result = run_openadmixture(
+    bfile="data/my_cohort/my_cohort",
+    k=3,
+    out_prefix="results/my_cohort_k3",
+    seed=42,
+    threads=4,
+)
+```
+
+Keep the same pattern: validate a small run first, choose clear output prefixes,
+and keep the result metadata with your analysis artifacts.
