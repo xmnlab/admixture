@@ -5,7 +5,7 @@ project:
 website:
   title: "admixture"
   description: "Python wrapper around OpenADMIXTURE.jl"
-  repo-url: https://github.com/malariagen-org/admixture
+  repo-url: https://github.com/osl-incubatoradmixture
   repo-actions: [source, issue]
   navbar:
     left:
